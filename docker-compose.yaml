@@ -1,0 +1,14 @@
+version: 3
+
+services:
+  discount-service:
+    image: hashorg/hash-mock-discount-service
+    container_name: discount-service
+    ports:
+    - 50051:50051
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
