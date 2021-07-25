@@ -6,17 +6,21 @@ import (
 	"testing"
 )
 
+
+var productMock = Product{
+	ID: 1,
+	Title: "Ergonomic Wooden Pants",
+	Description: "Deleniti beatae porro.",
+	Amount: 15157,
+	IsGift: false,
+}
+
 func TestApplyDiscount(t *testing.T) {
 	t.Run("Should return a product as gift without prices(unit, total) values", func(t *testing.T) {
 		t.Parallel()
 
-		product := Product{
-			ID: 1,
-			Title: "Ergonomic Wooden Pants",
-			Description: "Deleniti beatae porro.",
-			Amount: 15157,
-			IsGift: true,
-		}
+		product := productMock
+		product.IsGift = true
 
 		quantity := 2
 		discountPercentage := 0.15
@@ -37,14 +41,7 @@ func TestApplyDiscount(t *testing.T) {
 	t.Run("Should return a product with discount not applied 'cause percentage is equals to 0", func(t *testing.T) {
 		t.Parallel()
 
-		product := Product{
-			ID: 1,
-			Title: "Ergonomic Wooden Pants",
-			Description: "Deleniti beatae porro.",
-			Amount: 15157,
-			IsGift: false,
-		}
-
+		product := productMock
 		quantity := 2
 		discountPercentage := 0.0
 
@@ -64,14 +61,7 @@ func TestApplyDiscount(t *testing.T) {
 	t.Run("Should return a product applied discount", func(t *testing.T) {
 		t.Parallel()
 
-		product := Product{
-			ID: 1,
-			Title: "Ergonomic Wooden Pants",
-			Description: "Deleniti beatae porro.",
-			Amount: 15157,
-			IsGift: false,
-		}
-
+		product := productMock
 		quantity := 2
 		discountPercentage := 0.15
 
