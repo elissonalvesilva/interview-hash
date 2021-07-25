@@ -2,6 +2,7 @@ package entity
 
 import (
 	"github.com/elissonalvesilva/interview-hash/my-ecommerce/domain/protocols"
+	"github.com/elissonalvesilva/interview-hash/my-ecommerce/shared/currency"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
@@ -48,8 +49,8 @@ func TestApplyDiscount(t *testing.T) {
 		expectedProductNotAppliedDiscount := protocols.ProductAppliedDiscount{
 			ID: product.ID,
 			Quantity: quantity,
-			UnitAmount: product.Amount,
-			TotalAmount: product.Amount * float64(quantity),
+			UnitAmount: currency.TruncateNaive(product.Amount, 2),
+			TotalAmount: currency.TruncateNaive(product.Amount * float64(quantity), 2),
 			Discount: 0,
 			IsGift: product.IsGift,
 		}
@@ -68,9 +69,9 @@ func TestApplyDiscount(t *testing.T) {
 		expectedProductAppliedDiscount := protocols.ProductAppliedDiscount{
 			ID: product.ID,
 			Quantity: quantity,
-			UnitAmount: product.Amount,
-			TotalAmount: product.Amount * float64(quantity),
-			Discount: product.Amount * discountPercentage,
+			UnitAmount: currency.TruncateNaive(product.Amount, 2),
+			TotalAmount: currency.TruncateNaive(product.Amount * float64(quantity), 2),
+			Discount: currency.TruncateNaive(product.Amount * discountPercentage, 2),
 			IsGift: product.IsGift,
 		}
 
