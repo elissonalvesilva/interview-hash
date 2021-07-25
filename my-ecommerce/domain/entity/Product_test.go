@@ -60,4 +60,31 @@ func TestApplyDiscount(t *testing.T) {
 		appliedDiscount := ApplyDiscount(product, quantity, discountPercentage)
 		assert.Equal(t, expectedProductNotAppliedDiscount, appliedDiscount)
 	})
+
+	t.Run("Should return a product applied discount", func(t *testing.T) {
+		t.Parallel()
+
+		product := Product{
+			ID: 1,
+			Title: "Ergonomic Wooden Pants",
+			Description: "Deleniti beatae porro.",
+			Amount: 15157,
+			IsGift: false,
+		}
+
+		quantity := 2
+		discountPercentage := 0.15
+
+		expectedProductAppliedDiscount := protocols.ProductAppliedDiscount{
+			ID: product.ID,
+			Quantity: quantity,
+			UnitAmount: product.Amount,
+			TotalAmount: product.Amount * float64(quantity),
+			Discount: product.Amount * discountPercentage,
+			IsGift: product.IsGift,
+		}
+
+		appliedDiscount := ApplyDiscount(product, quantity, discountPercentage)
+		assert.Equal(t, expectedProductAppliedDiscount, appliedDiscount)
+	})
 }
