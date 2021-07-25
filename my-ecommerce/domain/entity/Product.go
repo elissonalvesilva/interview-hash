@@ -3,6 +3,7 @@ package entity
 import (
 	"github.com/elissonalvesilva/interview-hash/my-ecommerce/domain/protocols"
 	valueObjects "github.com/elissonalvesilva/interview-hash/my-ecommerce/domain/value-objects"
+	"github.com/elissonalvesilva/interview-hash/my-ecommerce/shared/currency"
 )
 
 type Product struct {
@@ -33,8 +34,8 @@ func ApplyDiscount(product Product, quantity int, percentage float64) protocols.
 		return protocols.ProductAppliedDiscount{
 			ID: product.ID,
 			Quantity: quantity,
-			UnitAmount: product.Amount,
-			TotalAmount: totalAmount,
+			UnitAmount: currency.TruncateNaive(product.Amount, 2),
+			TotalAmount: currency.TruncateNaive(totalAmount, 2),
 			Discount: 0,
 			IsGift: product.IsGift,
 		}
@@ -44,9 +45,9 @@ func ApplyDiscount(product Product, quantity int, percentage float64) protocols.
 	return protocols.ProductAppliedDiscount{
 		ID: product.ID,
 		Quantity: quantity,
-		UnitAmount: product.Amount,
-		TotalAmount: totalAmount,
-		Discount: discount,
+		UnitAmount: currency.TruncateNaive(product.Amount, 2),
+		TotalAmount: currency.TruncateNaive(totalAmount, 2),
+		Discount: currency.TruncateNaive(discount, 2),
 		IsGift: product.IsGift,
 	}
 }
