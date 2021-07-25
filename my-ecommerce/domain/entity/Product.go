@@ -28,5 +28,17 @@ func ApplyDiscount(product Product, quantity int, percentage float64) protocols.
 		}
 	}
 
+	totalAmount := product.Amount * float64(quantity)
+	if percentage == 0.0 {
+		return protocols.ProductAppliedDiscount{
+			ID: product.ID,
+			Quantity: quantity,
+			UnitAmount: product.Amount,
+			TotalAmount: totalAmount,
+			Discount: 0,
+			IsGift: product.IsGift,
+		}
+	}
+
 	return protocols.ProductAppliedDiscount{}
 }
