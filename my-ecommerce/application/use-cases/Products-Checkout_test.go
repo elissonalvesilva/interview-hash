@@ -21,24 +21,34 @@ var productsCheckout = []protocols.ProductCheckout{
 
 func TestProductCheckoutUseCase_CheckoutProducts(t *testing.T) {
 	t.Run("Should return a empty response of products", func(t *testing.T) {
+		t.Parallel()
 		ctrl := gomock.NewController(t)
 
 		mockProductCheckoutRepository := mock.NewMockProductCheckoutRepository(ctrl)
+		mockDiscountServiceRepository := mock.NewMockDiscountServiceRepository(ctrl)
+
 		mockProductCheckoutRepository.EXPECT().GetProducts(gomock.Any()).Return([]protocols.ProductToApplyDiscount{})
 
-		sut := NewProductsCheckout(mockProductCheckoutRepository)
+		sut := NewProductsCheckout(mockProductCheckoutRepository, mockDiscountServiceRepository)
 
 		response := sut.CheckoutProducts(productsCheckout)
 		assert.Equal(t, protocols.CheckoutResponse{}, response)
 	})
 
 	t.Run("Should checkout response with correct values", func(t *testing.T) {
+		t.Parallel()
 		ctrl := gomock.NewController(t)
 
 		mockProductCheckoutRepository := mock.NewMockProductCheckoutRepository(ctrl)
+		mockDiscountServiceRepository := mock.NewMockDiscountServiceRepository(ctrl)
+
+		gomock.InOrder(
+			mockDiscountServiceRepository.EXPECT().GetProductDiscount(gomock.Any()).Return(0.15, nil),
+			mockDiscountServiceRepository.EXPECT().GetProductDiscount(gomock.Any()).Return(0.25, nil),
+		)
 		mockProductCheckoutRepository.EXPECT().GetProducts(gomock.Any()).Return(mock.ProductsToApplyDiscountResponse)
 
-		sut := NewProductsCheckout(mockProductCheckoutRepository)
+		sut := NewProductsCheckout(mockProductCheckoutRepository, mockDiscountServiceRepository)
 
 		response := sut.CheckoutProducts(productsCheckout)
 		assert.Equal(t, mock.CheckoutResponse, response)
