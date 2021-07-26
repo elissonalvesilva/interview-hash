@@ -1,11 +1,15 @@
 package date
 
-import "time"
+import (
+	"time"
+)
 
 func IsBlackFriday(actualDate time.Time, blackFridayDate time.Time) bool {
 	isBlackFriday := false
 
-	if actualDate == blackFridayDate {
+	if actualDate.Year() == blackFridayDate.Year() &&
+		actualDate.Month() == blackFridayDate.Month() &&
+		actualDate.Day() == blackFridayDate.Day(){
 		isBlackFriday = true
 		return isBlackFriday
 	}
