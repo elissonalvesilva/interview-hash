@@ -1,4 +1,4 @@
-package db
+package in_memory
 
 import (
 	"github.com/elissonalvesilva/interview-hash/my-ecommerce/domain/entity"
@@ -42,5 +42,16 @@ func TestGetNameStruct(t *testing.T) {
 		assert.Equal(t, "", response)
 		assert.NotNil(t, errorResponse)
 		assert.Errorf(t, expectedResponse, response)
+	})
+
+	t.Run("Should return a string with name of Struct key if condition exists", func(t *testing.T) {
+		t.Parallel()
+
+		expectedResponse := "ID"
+
+		response, errorResponse := GetNameStruct("ID")
+		assert.Nil(t, errorResponse)
+		assert.Equal(t, expectedResponse, response)
+
 	})
 }
