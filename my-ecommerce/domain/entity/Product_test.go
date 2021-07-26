@@ -8,12 +8,11 @@ import (
 )
 
 
-var productMock = Product{
+var productMock = protocols.ProductToApplyDiscount{
 	ID: 1,
-	Title: "Ergonomic Wooden Pants",
-	Description: "Deleniti beatae porro.",
 	Amount: 15157,
 	IsGift: false,
+	Quantity: 1,
 }
 
 func TestApplyDiscount(t *testing.T) {
