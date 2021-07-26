@@ -4,7 +4,6 @@ package mock
 import (
 	"reflect"
 
-	"github.com/elissonalvesilva/interview-hash/my-ecommerce/domain/entity"
 	"github.com/elissonalvesilva/interview-hash/my-ecommerce/domain/protocols"
 	"github.com/golang/mock/gomock"
 )
@@ -33,10 +32,10 @@ func (m *MockProductCheckoutRepository) EXPECT() *MockProductCheckoutRepositoryM
 }
 
 // GetProducts mocks base method.
-func (m *MockProductCheckoutRepository) GetProducts(arg0 []protocols.ProductCheckout) []entity.Product {
+func (m *MockProductCheckoutRepository) GetProducts(arg0 []protocols.ProductCheckout) []protocols.ProductToApplyDiscount {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetProducts", arg0)
-	ret0, _ := ret[0].([]entity.Product)
+	ret0, _ := ret[0].([]protocols.ProductToApplyDiscount)
 	return ret0
 }
 
@@ -45,4 +44,3 @@ func (mr *MockProductCheckoutRepositoryMockRecorder) GetProducts(arg0 interface{
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetProducts", reflect.TypeOf((*MockProductCheckoutRepository)(nil).GetProducts), arg0)
 }
-
