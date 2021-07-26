@@ -1,23 +1,14 @@
-package db
+package in_memory
 
 import (
 	"errors"
 	"github.com/elissonalvesilva/interview-hash/my-ecommerce/domain/entity"
+	"github.com/elissonalvesilva/interview-hash/my-ecommerce/infrastructure/db/in-memory/protocols"
 	"reflect"
 )
 
 type InMemoryDatabase struct {
 	database []entity.Product
-}
-
-type Filter struct {
-	Condition string
-	ValueToFilter interface{}
-}
-
-type InMemory interface {
-	GetByID(id int) (entity.Product, error)
-	GetOne(filter Filter) (entity.Product, error)
 }
 
 const (
@@ -48,7 +39,7 @@ func (db *InMemoryDatabase) GetByID(id int) (entity.Product, error) {
 	return entity.Product{}, ErrNotFoundItemInDBByCondition
 }
 
-func (db *InMemoryDatabase) GetOne(filter Filter) (entity.Product, error) {
+func (db *InMemoryDatabase) GetOne(filter protocols.Filter) (entity.Product, error) {
 	return entity.Product{}, ErrNotFoundItemInDB
 }
 
