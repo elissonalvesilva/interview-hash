@@ -41,7 +41,7 @@ func ApplyDiscount(product protocols.ProductToApplyDiscount, quantity int, perce
 		}
 	}
 
-	discount := product.Amount * percentage
+	discount := (product.Amount * float64(quantity)) * percentage
 	return protocols.ProductAppliedDiscount{
 		ID: product.ID,
 		Quantity: quantity,
