@@ -31,3 +31,16 @@ func TestInMemoryDatabase_GetByID(t *testing.T) {
 		assert.Equal(t, expectedResponse, response)
 	})
 }
+
+func TestGetNameStruct(t *testing.T) {
+	t.Run("Should return a error if condition is not found in struct", func(t *testing.T) {
+		t.Parallel()
+
+		expectedResponse := ErrNotFoundConditionInStruct
+
+		response, errorResponse := GetNameStruct("x")
+		assert.Equal(t, "", response)
+		assert.NotNil(t, errorResponse)
+		assert.Errorf(t, expectedResponse, response)
+	})
+}
