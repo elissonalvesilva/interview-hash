@@ -9,6 +9,12 @@ var defaultDiscount = 0.15
 var quantityProduct1 = 2
 var quantityProduct2 = 2
 
+var ProductsToCheckout = []protocols.ProductCheckout{
+	{ID: 1, Quantity: 2},
+	{ID: 2, Quantity: 2},
+	{ID: 3, Quantity: 2},
+}
+
 var ProductsAppliedDiscount = []protocols.ProductAppliedDiscount {
 	protocols.ProductAppliedDiscount{
 		ID: Product1.ID,
@@ -72,6 +78,27 @@ var ProductsToApplyDiscountResponse = []protocols.ProductToApplyDiscount {
 		Amount: Product1.Amount,
 		Quantity: quantityProduct1,
 		IsGift: Product1.IsGift,
+	},
+	protocols.ProductToApplyDiscount{
+		ID: Product3.ID,
+		Amount: Product3.Amount,
+		Quantity: quantityProduct2,
+		IsGift: Product3.IsGift,
+	},
+}
+
+var AllProductsToApplyDiscount = []protocols.ProductToApplyDiscount {
+	protocols.ProductToApplyDiscount{
+		ID: Product1.ID,
+		Amount: Product1.Amount,
+		Quantity: quantityProduct1,
+		IsGift: Product1.IsGift,
+	},
+	protocols.ProductToApplyDiscount{
+		ID: Product2.ID,
+		Amount: Product2.Amount,
+		Quantity: quantityProduct2,
+		IsGift: Product2.IsGift,
 	},
 	protocols.ProductToApplyDiscount{
 		ID: Product3.ID,
