@@ -4,17 +4,20 @@ import (
 	useCaseProtocol "github.com/elissonalvesilva/interview-hash/my-ecommerce/application/protocols"
 	"github.com/elissonalvesilva/interview-hash/my-ecommerce/domain/entity"
 	domainProtocol "github.com/elissonalvesilva/interview-hash/my-ecommerce/domain/protocols"
+	"time"
 )
 
 type ProductCheckoutUseCase struct {
 	repo useCaseProtocol.ProductCheckoutRepository
 	service useCaseProtocol.DiscountServiceRepository
+	blackFridayDate time.Time
 }
 
-func NewProductsCheckout(repository useCaseProtocol.ProductCheckoutRepository, service useCaseProtocol.DiscountServiceRepository) *ProductCheckoutUseCase {
+func NewProductsCheckout(repository useCaseProtocol.ProductCheckoutRepository, service useCaseProtocol.DiscountServiceRepository, blackFridayDate time.Time) *ProductCheckoutUseCase {
 	return &ProductCheckoutUseCase{
 		repo: repository,
 		service: service,
+		blackFridayDate: blackFridayDate,
 	}
 }
 
@@ -49,4 +52,17 @@ func (useCase *ProductCheckoutUseCase) CheckoutProducts(productList []domainProt
 		TotalDiscount: totalDiscount,
 		Products: productsAppliedDiscount,
 	}
+}
+
+func ExistsGiftAddedInProducts(products []domainProtocol.ProductAppliedDiscount) bool {
+	existsProductGift := false
+
+	for _, product := range products {
+		if product.IsGift {
+			existsProductGift = true
+			return existsProductGift
+		}
+	}
+
+	return existsProductGift
 }
