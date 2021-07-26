@@ -58,6 +58,39 @@ func TestProductCheckoutUseCase_CheckoutProducts(t *testing.T) {
 		assert.Equal(t, mock.CheckoutResponseWithoutDiscount, response)
 	})
 
+	t.Run("Should return a response with products applied discount and with a gift 'cause the date is equals to black friday", func(t *testing.T) {
+		t.Parallel()
+		ctrl := gomock.NewController(t)
+
+		mockProductCheckoutRepository := mock.NewMockProductCheckoutRepository(ctrl)
+		mockDiscountServiceRepository := mock.NewMockDiscountServiceRepository(ctrl)
+
+		giftProduct := protocols.ProductAppliedDiscount{
+			ID: mock.Product3.ID,
+			Quantity: 2,
+			UnitAmount: 0,
+			TotalAmount: 0,
+			Discount: 0,
+			IsGift: mock.Product3.IsGift,
+		}
+
+		gomock.InOrder(
+			mockDiscountServiceRepository.EXPECT().GetProductDiscount(gomock.Any()).Return(0.15, nil),
+			mockDiscountServiceRepository.EXPECT().GetProductDiscount(gomock.Any()).Return(0.15, nil),
+		)
+
+		mockProductCheckoutRepository.EXPECT().GetProducts(gomock.Any()).Return(mock.ProductsToApplyDiscountWithoutGift)
+		mockProductCheckoutRepository.EXPECT().GetProductToGift().Return(giftProduct)
+
+		sut := NewProductsCheckout(mockProductCheckoutRepository, mockDiscountServiceRepository, time.Now())
+
+		expectedResponse := mock.CheckoutResponseWithGift
+		expectedResponse.Products = append(expectedResponse.Products, giftProduct)
+
+		response := sut.CheckoutProducts(productsCheckout)
+		assert.Equal(t, expectedResponse, response)
+	})
+
 	t.Run("Should return a response with products applied discount and total of amount, discount and applied discount", func(t *testing.T) {
 		t.Parallel()
 		ctrl := gomock.NewController(t)
