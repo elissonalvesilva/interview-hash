@@ -6,4 +6,5 @@ import (
 
 type ProductCheckoutRepository interface {
 	GetProducts([]protocols.ProductCheckout) []protocols.ProductToApplyDiscount
+	GetProductToGift() protocols.ProductAppliedDiscount
 }
