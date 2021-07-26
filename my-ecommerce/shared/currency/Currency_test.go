@@ -7,12 +7,12 @@ import (
 
 func TestTruncateNaive(t *testing.T) {
 	t.Run("Should truncate a number with 2 places after dot", func(t *testing.T) {
-		number := TruncateNaive(152.00451354613, 2)
+		number := TruncateNaive(152.00451354613)
 		assert.Equal(t, 152.00, number)
 	})
 
 	t.Run("Should truncate a number with 2 places without dot", func(t *testing.T) {
-		number := TruncateNaive(152, 2)
+		number := TruncateNaive(152)
 		assert.Equal(t, 152.00, number)
 	})
 }
