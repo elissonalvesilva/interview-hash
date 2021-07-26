@@ -7,6 +7,7 @@ import (
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 	"testing"
+	"time"
 )
 
 var productsCheckout = []protocols.ProductCheckout{
@@ -20,6 +21,8 @@ var productsCheckout = []protocols.ProductCheckout{
 	},
 }
 
+var blackFridayDate = time.Date(2021, 11, 29, 00, 00, 00, 00, time.UTC)
+
 func TestProductCheckoutUseCase_CheckoutProducts(t *testing.T) {
 	t.Run("Should return a empty response of products", func(t *testing.T) {
 		t.Parallel()
@@ -30,7 +33,7 @@ func TestProductCheckoutUseCase_CheckoutProducts(t *testing.T) {
 
 		mockProductCheckoutRepository.EXPECT().GetProducts(gomock.Any()).Return([]protocols.ProductToApplyDiscount{})
 
-		sut := NewProductsCheckout(mockProductCheckoutRepository, mockDiscountServiceRepository)
+		sut := NewProductsCheckout(mockProductCheckoutRepository, mockDiscountServiceRepository, blackFridayDate)
 
 		response := sut.CheckoutProducts(productsCheckout)
 		assert.Equal(t, protocols.CheckoutResponse{}, response)
@@ -49,7 +52,7 @@ func TestProductCheckoutUseCase_CheckoutProducts(t *testing.T) {
 		)
 		mockProductCheckoutRepository.EXPECT().GetProducts(gomock.Any()).Return(mock.ProductsToApplyDiscountResponse)
 
-		sut := NewProductsCheckout(mockProductCheckoutRepository, mockDiscountServiceRepository)
+		sut := NewProductsCheckout(mockProductCheckoutRepository, mockDiscountServiceRepository, blackFridayDate)
 
 		response := sut.CheckoutProducts(productsCheckout)
 		assert.Equal(t, mock.CheckoutResponseWithoutDiscount, response)
@@ -68,9 +71,27 @@ func TestProductCheckoutUseCase_CheckoutProducts(t *testing.T) {
 		)
 		mockProductCheckoutRepository.EXPECT().GetProducts(gomock.Any()).Return(mock.ProductsToApplyDiscountResponse)
 
-		sut := NewProductsCheckout(mockProductCheckoutRepository, mockDiscountServiceRepository)
+		sut := NewProductsCheckout(mockProductCheckoutRepository, mockDiscountServiceRepository, blackFridayDate)
 
 		response := sut.CheckoutProducts(productsCheckout)
 		assert.Equal(t, mock.CheckoutResponse, response)
+	})
+}
+
+func TestExistsGiftAddedInProducts(t *testing.T) {
+	t.Run("Should return false if not exists product gift in list", func(t *testing.T) {
+		t.Parallel()
+		expectedResponse := false
+
+		existsGiftInList := ExistsGiftAddedInProducts(mock.ProductsAppliedDiscountWithoutGift)
+		assert.Equal(t, expectedResponse, existsGiftInList)
+	})
+
+	t.Run("Should return true if exists product gift in list", func(t *testing.T) {
+		t.Parallel()
+		expectedResponse := true
+
+		existsGiftInList := ExistsGiftAddedInProducts(mock.ProductsAppliedDiscount)
+		assert.Equal(t, expectedResponse, existsGiftInList)
 	})
 }
