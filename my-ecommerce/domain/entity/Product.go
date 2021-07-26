@@ -34,20 +34,21 @@ func ApplyDiscount(product protocols.ProductToApplyDiscount, quantity int, perce
 		return protocols.ProductAppliedDiscount{
 			ID: product.ID,
 			Quantity: quantity,
-			UnitAmount: currency.TruncateNaive(product.Amount, 2),
-			TotalAmount: currency.TruncateNaive(totalAmount, 2),
+			UnitAmount: currency.TruncateNaive(product.Amount),
+			TotalAmount: currency.TruncateNaive(totalAmount),
 			Discount: 0,
 			IsGift: product.IsGift,
 		}
 	}
 
-	discount := (product.Amount * float64(quantity)) * percentage
+	discount := totalAmount * percentage
+
 	return protocols.ProductAppliedDiscount{
 		ID: product.ID,
 		Quantity: quantity,
-		UnitAmount: currency.TruncateNaive(product.Amount, 2),
-		TotalAmount: currency.TruncateNaive(totalAmount, 2),
-		Discount: currency.TruncateNaive(discount, 2),
+		UnitAmount: currency.TruncateNaive(product.Amount),
+		TotalAmount: currency.TruncateNaive(totalAmount),
+		Discount: currency.TruncateNaive(discount),
 		IsGift: product.IsGift,
 	}
 }
