@@ -70,7 +70,7 @@ func TestApplyDiscount(t *testing.T) {
 			Quantity: quantity,
 			UnitAmount: currency.TruncateNaive(product.Amount, 2),
 			TotalAmount: currency.TruncateNaive(product.Amount * float64(quantity), 2),
-			Discount: currency.TruncateNaive(product.Amount * discountPercentage, 2),
+			Discount: currency.TruncateNaive((product.Amount * float64(quantity)) * discountPercentage, 2),
 			IsGift: product.IsGift,
 		}
 
