@@ -16,7 +16,7 @@ type Product struct {
 
 const ISGIFT = true
 
-func ApplyDiscount(product Product, quantity int, percentage float64) protocols.ProductAppliedDiscount {
+func ApplyDiscount(product protocols.ProductToApplyDiscount, quantity int, percentage float64) protocols.ProductAppliedDiscount {
 
 	if product.IsGift == ISGIFT {
 		return protocols.ProductAppliedDiscount{
