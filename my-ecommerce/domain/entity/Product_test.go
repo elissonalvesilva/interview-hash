@@ -48,8 +48,8 @@ func TestApplyDiscount(t *testing.T) {
 		expectedProductNotAppliedDiscount := protocols.ProductAppliedDiscount{
 			ID: product.ID,
 			Quantity: quantity,
-			UnitAmount: currency.TruncateNaive(product.Amount, 2),
-			TotalAmount: currency.TruncateNaive(product.Amount * float64(quantity), 2),
+			UnitAmount: currency.TruncateNaive(product.Amount),
+			TotalAmount: currency.TruncateNaive(product.Amount * float64(quantity)),
 			Discount: 0,
 			IsGift: product.IsGift,
 		}
@@ -68,9 +68,9 @@ func TestApplyDiscount(t *testing.T) {
 		expectedProductAppliedDiscount := protocols.ProductAppliedDiscount{
 			ID: product.ID,
 			Quantity: quantity,
-			UnitAmount: currency.TruncateNaive(product.Amount, 2),
-			TotalAmount: currency.TruncateNaive(product.Amount * float64(quantity), 2),
-			Discount: currency.TruncateNaive((product.Amount * float64(quantity)) * discountPercentage, 2),
+			UnitAmount: currency.TruncateNaive(product.Amount),
+			TotalAmount: currency.TruncateNaive(product.Amount * float64(quantity)),
+			Discount: currency.TruncateNaive((product.Amount * float64(quantity)) * discountPercentage),
 			IsGift: product.IsGift,
 		}
 
