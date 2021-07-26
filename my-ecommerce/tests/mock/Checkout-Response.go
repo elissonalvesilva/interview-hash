@@ -9,25 +9,6 @@ var defaultDiscount = 0.15
 var quantityProduct1 = 2
 var quantityProduct2 = 2
 
-var ProductsAppliedDiscountWithoutGift = []protocols.ProductAppliedDiscount {
-	protocols.ProductAppliedDiscount{
-		ID: Product1.ID,
-		Quantity: quantityProduct1,
-		UnitAmount: currency.TruncateNaive(Product1.Amount),
-		TotalAmount: currency.TruncateNaive(Product1.Amount * float64(quantityProduct1)),
-		Discount: currency.TruncateNaive(Product1.Amount * float64(quantityProduct1) * defaultDiscount),
-		IsGift: Product1.IsGift,
-	},
-	protocols.ProductAppliedDiscount{
-		ID: Product2.ID,
-		Quantity: quantityProduct2,
-		UnitAmount: currency.TruncateNaive(Product2.Amount),
-		TotalAmount: currency.TruncateNaive(Product2.Amount * float64(quantityProduct1)),
-		Discount: currency.TruncateNaive(Product2.Amount * float64(quantityProduct1) * defaultDiscount),
-		IsGift: Product2.IsGift,
-	},
-}
-
 var ProductsAppliedDiscount = []protocols.ProductAppliedDiscount {
 	protocols.ProductAppliedDiscount{
 		ID: Product1.ID,
@@ -66,6 +47,25 @@ var ProductsNotAppliedDiscount = []protocols.ProductAppliedDiscount {
 	},
 }
 
+var ProductsAppliedDiscountWithoutGift = []protocols.ProductAppliedDiscount {
+	protocols.ProductAppliedDiscount{
+		ID: Product1.ID,
+		Quantity: quantityProduct1,
+		UnitAmount: currency.TruncateNaive(Product1.Amount),
+		TotalAmount: currency.TruncateNaive(Product1.Amount * float64(quantityProduct1)),
+		Discount: currency.TruncateNaive(Product1.Amount * float64(quantityProduct1) * defaultDiscount),
+		IsGift: Product1.IsGift,
+	},
+	protocols.ProductAppliedDiscount{
+		ID: Product2.ID,
+		Quantity: quantityProduct2,
+		UnitAmount: currency.TruncateNaive(Product2.Amount),
+		TotalAmount: currency.TruncateNaive(Product2.Amount * float64(quantityProduct1)),
+		Discount: currency.TruncateNaive(Product2.Amount * float64(quantityProduct1) * defaultDiscount),
+		IsGift: Product2.IsGift,
+	},
+}
+
 var ProductsToApplyDiscountResponse = []protocols.ProductToApplyDiscount {
 	protocols.ProductToApplyDiscount{
 		ID: Product1.ID,
@@ -81,6 +81,21 @@ var ProductsToApplyDiscountResponse = []protocols.ProductToApplyDiscount {
 	},
 }
 
+var ProductsToApplyDiscountWithoutGift = []protocols.ProductToApplyDiscount {
+	protocols.ProductToApplyDiscount{
+		ID: Product1.ID,
+		Amount: Product1.Amount,
+		Quantity: quantityProduct1,
+		IsGift: Product1.IsGift,
+	},
+	protocols.ProductToApplyDiscount{
+		ID: Product2.ID,
+		Amount: Product2.Amount,
+		Quantity: quantityProduct2,
+		IsGift: Product2.IsGift,
+	},
+}
+
 var CheckoutResponse = protocols.CheckoutResponse{
 	TotalAmount: currency.TruncateNaive(Product1.Amount * float64(quantityProduct1)),
 	TotalAmountWithDiscount: (Product1.Amount * float64(quantityProduct1)) - (Product1.Amount * float64(quantityProduct1)) * defaultDiscount,
@@ -93,4 +108,11 @@ var CheckoutResponseWithoutDiscount = protocols.CheckoutResponse{
 	TotalAmountWithDiscount: currency.TruncateNaive(Product1.Amount * float64(quantityProduct1)),
 	TotalDiscount: 0,
 	Products: ProductsNotAppliedDiscount,
+}
+
+var CheckoutResponseWithGift = protocols.CheckoutResponse{
+	TotalAmount: currency.TruncateNaive(Product1.Amount * float64(quantityProduct1)) + currency.TruncateNaive(Product2.Amount * float64(quantityProduct2)),
+	TotalAmountWithDiscount: (Product1.Amount * float64(quantityProduct1)) - (Product1.Amount * float64(quantityProduct1)) * defaultDiscount + (Product2.Amount * float64(quantityProduct1)) - (Product2.Amount * float64(quantityProduct2)) * defaultDiscount,
+	TotalDiscount: currency.TruncateNaive((Product1.Amount * float64(quantityProduct1)) * defaultDiscount) + currency.TruncateNaive((Product2.Amount * float64(quantityProduct2)) * defaultDiscount),
+	Products: ProductsAppliedDiscountWithoutGift,
 }
