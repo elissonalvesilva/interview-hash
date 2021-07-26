@@ -46,9 +46,11 @@ func (useCase *ProductCheckoutUseCase) CheckoutProducts(productList []domainProt
 		productsAppliedDiscount = append(productsAppliedDiscount, productAppliedDiscount)
 	}
 
-	if date.IsBlackFriday(time.Now(), useCase.blackFridayDate) && !ExistsGiftAddedInProducts(productsAppliedDiscount) {
-		productGift := useCase.repo.GetProductToGift()
-		productsAppliedDiscount = append(productsAppliedDiscount, productGift)
+	if date.IsBlackFriday(time.Now(), useCase.blackFridayDate) {
+		if !ExistsGiftAddedInProducts(productsAppliedDiscount) {
+			productGift := useCase.repo.GetProductToGift()
+			productsAppliedDiscount = append(productsAppliedDiscount, productGift)
+		}
 	}
 
 	totalAmountWithDiscount := totalAmount - totalDiscount
