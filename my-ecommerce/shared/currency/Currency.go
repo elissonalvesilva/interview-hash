@@ -1,7 +1,14 @@
 package currency
 
-import "math"
+import (
+	"fmt"
+	"strconv"
+)
 
-func TruncateNaive(f float64, unit float64) float64 {
-	return math.Trunc(f/unit) * unit
+func TruncateNaive(value float64) float64 {
+	if formattedNumber, err := strconv.ParseFloat(fmt.Sprintf("%.2f", value), 64); err == nil {
+		return formattedNumber
+	}
+
+	return value
 }
