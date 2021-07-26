@@ -4,6 +4,7 @@ import (
 	useCaseProtocol "github.com/elissonalvesilva/interview-hash/my-ecommerce/application/protocols"
 	"github.com/elissonalvesilva/interview-hash/my-ecommerce/domain/entity"
 	domainProtocol "github.com/elissonalvesilva/interview-hash/my-ecommerce/domain/protocols"
+	"github.com/elissonalvesilva/interview-hash/my-ecommerce/shared/date"
 	"time"
 )
 
@@ -43,6 +44,11 @@ func (useCase *ProductCheckoutUseCase) CheckoutProducts(productList []domainProt
 		totalAmount += productAppliedDiscount.TotalAmount
 		totalDiscount += productAppliedDiscount.Discount
 		productsAppliedDiscount = append(productsAppliedDiscount, productAppliedDiscount)
+	}
+
+	if date.IsBlackFriday(time.Now(), useCase.blackFridayDate) && !ExistsGiftAddedInProducts(productsAppliedDiscount) {
+		productGift := useCase.repo.GetProductToGift()
+		productsAppliedDiscount = append(productsAppliedDiscount, productGift)
 	}
 
 	totalAmountWithDiscount := totalAmount - totalDiscount
