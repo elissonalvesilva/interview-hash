@@ -31,8 +31,8 @@ func (useCase *ProductCheckoutUseCase) CheckoutProducts(productList []domainProt
 	var productsAppliedDiscount []domainProtocol.ProductAppliedDiscount
 
 	for _, product := range products {
-		discount, err := useCase.service.GetProductDiscount(int(product.ID))
-		if err != nil {
+		discount, serviceError := useCase.service.GetProductDiscount(int(product.ID))
+		if serviceError != nil {
 			discount = 0
 		}
 
