@@ -72,6 +72,33 @@ var ProductsAppliedDiscountWithoutGift = []protocols.ProductAppliedDiscount {
 	},
 }
 
+var AllProductsAppliedDiscountWithGift = []protocols.ProductAppliedDiscount {
+	protocols.ProductAppliedDiscount{
+		ID: Product1.ID,
+		Quantity: quantityProduct1,
+		UnitAmount: currency.TruncateNaive(Product1.Amount),
+		TotalAmount: currency.TruncateNaive(Product1.Amount * float64(quantityProduct1)),
+		Discount: currency.TruncateNaive(Product1.Amount * float64(quantityProduct1) * defaultDiscount),
+		IsGift: Product1.IsGift,
+	},
+	protocols.ProductAppliedDiscount{
+		ID: Product2.ID,
+		Quantity: quantityProduct2,
+		UnitAmount: currency.TruncateNaive(Product2.Amount),
+		TotalAmount: currency.TruncateNaive(Product2.Amount * float64(quantityProduct1)),
+		Discount: currency.TruncateNaive(Product2.Amount * float64(quantityProduct1) * defaultDiscount),
+		IsGift: Product2.IsGift,
+	},
+	protocols.ProductAppliedDiscount{
+		ID: Product3.ID,
+		Quantity: quantityProduct2,
+		UnitAmount: 0,
+		TotalAmount: 0,
+		Discount: 0,
+		IsGift: Product3.IsGift,
+	},
+}
+
 var ProductsToApplyDiscountResponse = []protocols.ProductToApplyDiscount {
 	protocols.ProductToApplyDiscount{
 		ID: Product1.ID,
