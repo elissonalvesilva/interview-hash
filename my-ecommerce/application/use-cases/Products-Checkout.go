@@ -32,19 +32,8 @@ func (useCase *ProductCheckoutUseCase) CheckoutProducts(productList []domainProt
 
 	var totalAmount float64
 	var totalDiscount float64
-	var productsAppliedDiscount []domainProtocol.ProductAppliedDiscount
 
-	for _, product := range products {
-		discount, serviceError := useCase.service.GetProductDiscount(int(product.ID))
-		if serviceError != nil {
-			discount = 0
-		}
-
-		productAppliedDiscount := entity.ApplyDiscount(product, product.Quantity, discount)
-		totalAmount += productAppliedDiscount.TotalAmount
-		totalDiscount += productAppliedDiscount.Discount
-		productsAppliedDiscount = append(productsAppliedDiscount, productAppliedDiscount)
-	}
+	productsAppliedDiscount := ApplyDiscountToProducts(useCase, &totalAmount, &totalDiscount, products)
 
 	if date.IsBlackFriday(time.Now(), useCase.blackFridayDate) {
 		if !ExistsGiftAddedInProducts(productsAppliedDiscount) {
@@ -60,6 +49,24 @@ func (useCase *ProductCheckoutUseCase) CheckoutProducts(productList []domainProt
 		TotalDiscount: totalDiscount,
 		Products: productsAppliedDiscount,
 	}
+}
+
+func ApplyDiscountToProducts(useCase *ProductCheckoutUseCase, totalAmount *float64, totalDiscount *float64, products []domainProtocol.ProductToApplyDiscount) []domainProtocol.ProductAppliedDiscount {
+	var productsAppliedDiscount []domainProtocol.ProductAppliedDiscount
+
+	for _, product := range products {
+		discount, serviceError := useCase.service.GetProductDiscount(int(product.ID))
+		if serviceError != nil {
+			discount = 0
+		}
+
+		productAppliedDiscount := entity.ApplyDiscount(product, product.Quantity, discount)
+		*totalAmount += productAppliedDiscount.TotalAmount
+		*totalDiscount += productAppliedDiscount.Discount
+		productsAppliedDiscount = append(productsAppliedDiscount, productAppliedDiscount)
+	}
+
+	return productsAppliedDiscount
 }
 
 func ExistsGiftAddedInProducts(products []domainProtocol.ProductAppliedDiscount) bool {
