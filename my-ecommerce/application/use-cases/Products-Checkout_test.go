@@ -151,6 +151,7 @@ func TestApplyDiscountToProducts(t *testing.T) {
 
 func TestSumTotalForResponse(t *testing.T) {
 	t.Run("Should sum all products and return by reference", func(t *testing.T) {
+		t.Parallel()
 		var totalAmount float64
 		var totalDiscount float64
 		var totalAmountWithDiscount float64
@@ -170,6 +171,36 @@ func TestSumTotalForResponse(t *testing.T) {
 		assert.Equal(t, expectedTotalAmount, totalAmount)
 		assert.Equal(t, expectedTotalDiscount, totalDiscount)
 		assert.Equal(t, expectedTotalAmountWithDiscount, totalAmountWithDiscount)
+	})
+}
+
+func TestAddGiftToCheckout(t *testing.T) {
+	t.Run("Should add a gift in product list", func(t *testing.T) {
+		t.Parallel()
+		ctrl := gomock.NewController(t)
+
+		mockProductCheckoutRepository := mock.NewMockProductCheckoutRepository(ctrl)
+		mockDiscountServiceRepository := mock.NewMockDiscountServiceRepository(ctrl)
+
+		giftProduct := protocols.ProductAppliedDiscount{
+			ID: mock.Product3.ID,
+			Quantity: 2,
+			UnitAmount: 0,
+			TotalAmount: 0,
+			Discount: 0,
+			IsGift: mock.Product3.IsGift,
+		}
+		productsAppliedDiscountWithoutGift := mock.ProductsAppliedDiscountWithoutGift
+
+		mockProductCheckoutRepository.EXPECT().GetProductToGift().Return(giftProduct)
+
+		sut := NewProductsCheckout(mockProductCheckoutRepository, mockDiscountServiceRepository, time.Now())
+
+		AddGiftToCheckout(sut, &productsAppliedDiscountWithoutGift)
+
+
+		assert.Equal(t, mock.AllProductsAppliedDiscountWithGift, productsAppliedDiscountWithoutGift)
+
 	})
 }
 
