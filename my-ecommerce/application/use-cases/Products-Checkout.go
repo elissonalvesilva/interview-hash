@@ -32,12 +32,14 @@ func (useCase *ProductCheckoutUseCase) CheckoutProducts(productList []domainProt
 
 	var totalAmount float64
 	var totalDiscount float64
+	var totalAmountWithDiscount float64
 
-	productsAppliedDiscount := ApplyDiscountToProducts(useCase, &totalAmount, &totalDiscount, products)
+	productsAppliedDiscount := ApplyDiscountToProducts(useCase, products)
 
 	AddGiftToCheckout(useCase, &productsAppliedDiscount)
 
-	totalAmountWithDiscount := totalAmount - totalDiscount
+	SumTotalForResponse(productsAppliedDiscount, &totalAmount, &totalDiscount, &totalAmountWithDiscount)
+
 	return domainProtocol.CheckoutResponse{
 		TotalAmount: totalAmount,
 		TotalAmountWithDiscount: totalAmountWithDiscount,
@@ -46,7 +48,7 @@ func (useCase *ProductCheckoutUseCase) CheckoutProducts(productList []domainProt
 	}
 }
 
-func ApplyDiscountToProducts(useCase *ProductCheckoutUseCase, totalAmount *float64, totalDiscount *float64, products []domainProtocol.ProductToApplyDiscount) []domainProtocol.ProductAppliedDiscount {
+func ApplyDiscountToProducts(useCase *ProductCheckoutUseCase, products []domainProtocol.ProductToApplyDiscount) []domainProtocol.ProductAppliedDiscount {
 	var productsAppliedDiscount []domainProtocol.ProductAppliedDiscount
 
 	for _, product := range products {
@@ -56,12 +58,19 @@ func ApplyDiscountToProducts(useCase *ProductCheckoutUseCase, totalAmount *float
 		}
 
 		productAppliedDiscount := entity.ApplyDiscount(product, product.Quantity, discount)
-		*totalAmount += productAppliedDiscount.TotalAmount
-		*totalDiscount += productAppliedDiscount.Discount
 		productsAppliedDiscount = append(productsAppliedDiscount, productAppliedDiscount)
 	}
 
 	return productsAppliedDiscount
+}
+
+func SumTotalForResponse(productsAppliedDiscount []domainProtocol.ProductAppliedDiscount, totalAmount *float64, totalDiscount *float64, totalAmountWithDiscount *float64) {
+	for _, product := range productsAppliedDiscount {
+		*totalAmount += product.TotalAmount
+		*totalDiscount += product.Discount
+	}
+
+	*totalAmountWithDiscount = *totalAmount - *totalDiscount
 }
 
 func AddGiftToCheckout(useCase *ProductCheckoutUseCase, productsAppliedDiscount *[]domainProtocol.ProductAppliedDiscount) {
