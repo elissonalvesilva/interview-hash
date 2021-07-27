@@ -5,6 +5,8 @@ import (
 	"github.com/asaskevich/govalidator"
 	useCases "github.com/elissonalvesilva/interview-hash/my-ecommerce/application/use-cases"
 	domainProtocol "github.com/elissonalvesilva/interview-hash/my-ecommerce/domain/protocols"
+	errorToResponse "github.com/elissonalvesilva/interview-hash/my-ecommerce/presenters/error"
+	sendResponse "github.com/elissonalvesilva/interview-hash/my-ecommerce/presenters/helpers"
 	"net/http"
 )
 
@@ -25,21 +27,15 @@ func (ctrl *CheckoutController) CheckoutProductsController (w http.ResponseWrite
 	errDecode := decoder.Decode(&productCheckoutRequest)
 
 	if errDecode != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		json.NewEncoder(w).Encode("Invalid request param json")
-		return
+		sendResponse.BadRequest(w, errorToResponse.InvalidJsonParamResponse())
 	}
 
 	_, errorValidationParam := govalidator.ValidateStruct(productCheckoutRequest)
 	if errorValidationParam != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		json.NewEncoder(w).Encode(errorValidationParam)
-		return
+		sendResponse.BadRequest(w, errorToResponse.InvalidRequestParams(errorValidationParam))
 	}
 
 	checkoutProduct := ctrl.useCase.CheckoutProducts(productCheckoutRequest.Products)
 
-	w.WriteHeader(200)
-	json.NewEncoder(w).Encode(checkoutProduct)
-	return
+	sendResponse.Ok(w, checkoutProduct)
 }
