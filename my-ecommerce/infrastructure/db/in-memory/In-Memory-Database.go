@@ -14,13 +14,11 @@ type InMemoryDatabase struct {
 const (
 	NotFoundItemInDB = "Not found in database"
 	NotFoundItemInDBByCondition = "Not found in database with this condition"
-	NotFoundConditionInStruct = "Not found condition in struct"
 )
 
 var (
 	ErrNotFoundItemInDB = errors.New(NotFoundItemInDB)
 	ErrNotFoundItemInDBByCondition = errors.New(NotFoundItemInDBByCondition)
-	ErrNotFoundConditionInStruct = errors.New(NotFoundConditionInStruct)
 )
 
 func NewInMemoryDatabase(db []entity.Product) *InMemoryDatabase {
@@ -36,23 +34,33 @@ func (db *InMemoryDatabase) GetByID(id int) (entity.Product, error) {
 		}
 	}
 
-	return entity.Product{}, ErrNotFoundItemInDBByCondition
-}
-
-func (db *InMemoryDatabase) GetOne(filter protocols.Filter) (entity.Product, error) {
 	return entity.Product{}, ErrNotFoundItemInDB
 }
 
-func GetNameStruct(elementToGet string) (string, error) {
-	element := reflect.ValueOf(&entity.Product{}).Elem()
+func (db *InMemoryDatabase) GetOne(filter protocols.Filter) (entity.Product, error) {
 
-	for i := 0; i < element.NumField(); i++ {
-		name := element.Type().Field(i).Name
-
-		if name == elementToGet {
-			return name, nil
+	for _, product := range db.database {
+		if GetValueFromStruct(product, filter.Condition) == filter.ValueToFilter {
+			return product, nil
 		}
 	}
 
-	return "", ErrNotFoundConditionInStruct
+	return entity.Product{}, ErrNotFoundItemInDBByCondition
 }
+
+func GetValueFromStruct(product entity.Product, field string) interface{} {
+	element := reflect.ValueOf(product).FieldByName(field)
+
+	switch element.Kind() {
+		case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
+			return int(element.Int())
+		case reflect.String:
+			return element.String()
+		case reflect.Float64:
+			return element.Float()
+		case reflect.Bool:
+			return element.Bool()
+	}
+	return nil
+}
+
