@@ -3,6 +3,7 @@ package controllers
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	useCases "github.com/elissonalvesilva/interview-hash/my-ecommerce/application/use-cases"
 	"github.com/elissonalvesilva/interview-hash/my-ecommerce/domain/protocols"
 	"github.com/elissonalvesilva/interview-hash/my-ecommerce/tests/mock"
@@ -24,10 +25,11 @@ func TestCheckoutController_CheckoutProductsController(t *testing.T) {
 
 		mockProductCheckoutRepository := mock.NewMockProductCheckoutRepository(ctrl)
 		mockDiscountServiceRepository := mock.NewMockDiscountServiceRepository(ctrl)
+		mockValidator := mock.NewMockValidateParam(ctrl)
 
 		productCheckoutUseCase := useCases.NewProductsCheckout(mockProductCheckoutRepository, mockDiscountServiceRepository, blackFridayDate)
 
-		sut := NewCheckoutController(*productCheckoutUseCase)
+		sut := NewCheckoutController(*productCheckoutUseCase, mockValidator)
 
 		productCheckoutRequest := []byte(`{"a1": 1`)
 
@@ -46,10 +48,14 @@ func TestCheckoutController_CheckoutProductsController(t *testing.T) {
 
 		mockProductCheckoutRepository := mock.NewMockProductCheckoutRepository(ctrl)
 		mockDiscountServiceRepository := mock.NewMockDiscountServiceRepository(ctrl)
+		mockValidator := mock.NewMockValidateParam(ctrl)
+
 
 		productCheckoutUseCase := useCases.NewProductsCheckout(mockProductCheckoutRepository, mockDiscountServiceRepository, blackFridayDate)
 
-		sut := NewCheckoutController(*productCheckoutUseCase)
+		sut := NewCheckoutController(*productCheckoutUseCase, mockValidator)
+
+		mockValidator.EXPECT().ValidateRequestParams(gomock.Any()).Return(errors.New("invalid request params"))
 
 		productCheckoutRequest := []byte(`{"a1": 1}`)
 
@@ -68,16 +74,19 @@ func TestCheckoutController_CheckoutProductsController(t *testing.T) {
 
 		mockProductCheckoutRepository := mock.NewMockProductCheckoutRepository(ctrl)
 		mockDiscountServiceRepository := mock.NewMockDiscountServiceRepository(ctrl)
+		mockValidator := mock.NewMockValidateParam(ctrl)
+
 
 		gomock.InOrder(
 			mockDiscountServiceRepository.EXPECT().GetProductDiscount(gomock.Any()).Return(0.15, nil),
 			mockDiscountServiceRepository.EXPECT().GetProductDiscount(gomock.Any()).Return(0.15, nil),
 		)
 		mockProductCheckoutRepository.EXPECT().GetProducts(gomock.Any()).Return(mock.ProductsToApplyDiscountResponse)
+		mockValidator.EXPECT().ValidateRequestParams(gomock.Any()).Return(nil)
 
 		productCheckoutUseCase := useCases.NewProductsCheckout(mockProductCheckoutRepository, mockDiscountServiceRepository, blackFridayDate)
 
-		sut := NewCheckoutController(*productCheckoutUseCase)
+		sut := NewCheckoutController(*productCheckoutUseCase, mockValidator)
 
 		productCheckoutRequest := []byte(`{"products": [{"id": 1, "quantity": 2}, {"id": 3, "quantity": 2}]}`)
 
