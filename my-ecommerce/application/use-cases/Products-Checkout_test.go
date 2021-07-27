@@ -111,6 +111,44 @@ func TestProductCheckoutUseCase_CheckoutProducts(t *testing.T) {
 	})
 }
 
+func TestApplyDiscountToProducts(t *testing.T) {
+	t.Run("Should apply discount equals to 0 if service discount returns error", func(t *testing.T) {
+		t.Parallel()
+		ctrl := gomock.NewController(t)
+
+		mockProductCheckoutRepository := mock.NewMockProductCheckoutRepository(ctrl)
+		mockDiscountServiceRepository := mock.NewMockDiscountServiceRepository(ctrl)
+
+		gomock.InOrder(
+			mockDiscountServiceRepository.EXPECT().GetProductDiscount(gomock.Any()).Return(0.0, errors.New("service unavailable")),
+			mockDiscountServiceRepository.EXPECT().GetProductDiscount(gomock.Any()).Return(0.25, nil),
+		)
+
+		sut := NewProductsCheckout(mockProductCheckoutRepository, mockDiscountServiceRepository, blackFridayDate)
+		productsAppliedDiscount := ApplyDiscountToProducts(sut, mock.ProductsToApplyDiscountResponse)
+
+		assert.Equal(t, mock.ProductsNotAppliedDiscount, productsAppliedDiscount)
+	})
+
+	t.Run("Should apply discount equals all products if service return success", func(t *testing.T) {
+		t.Parallel()
+		ctrl := gomock.NewController(t)
+
+		mockProductCheckoutRepository := mock.NewMockProductCheckoutRepository(ctrl)
+		mockDiscountServiceRepository := mock.NewMockDiscountServiceRepository(ctrl)
+
+		gomock.InOrder(
+			mockDiscountServiceRepository.EXPECT().GetProductDiscount(gomock.Any()).Return(0.15, nil),
+			mockDiscountServiceRepository.EXPECT().GetProductDiscount(gomock.Any()).Return(0.15, nil),
+		)
+
+		sut := NewProductsCheckout(mockProductCheckoutRepository, mockDiscountServiceRepository, blackFridayDate)
+		productsAppliedDiscount := ApplyDiscountToProducts(sut, mock.ProductsToApplyDiscountWithoutGift)
+
+		assert.Equal(t, mock.ProductsAppliedDiscountWithoutGift, productsAppliedDiscount)
+	})
+}
+
 func TestExistsGiftAddedInProducts(t *testing.T) {
 	t.Run("Should return false if not exists product gift in list", func(t *testing.T) {
 		t.Parallel()
