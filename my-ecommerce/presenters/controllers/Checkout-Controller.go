@@ -25,17 +25,19 @@ func (ctrl *CheckoutController) CheckoutProductsController (w http.ResponseWrite
 
 	var productCheckoutRequest domainProtocol.ProductCheckoutRequest
 	errDecode := decoder.Decode(&productCheckoutRequest)
-
 	if errDecode != nil {
 		sendResponse.BadRequest(w, errorToResponse.InvalidJsonParamResponse())
+		return
 	}
 
 	_, errorValidationParam := govalidator.ValidateStruct(productCheckoutRequest)
 	if errorValidationParam != nil {
 		sendResponse.BadRequest(w, errorToResponse.InvalidRequestParams(errorValidationParam))
+		return
 	}
 
 	checkoutProduct := ctrl.useCase.CheckoutProducts(productCheckoutRequest.Products)
 
 	sendResponse.Ok(w, checkoutProduct)
+	return
 }
