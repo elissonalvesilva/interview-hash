@@ -149,6 +149,30 @@ func TestApplyDiscountToProducts(t *testing.T) {
 	})
 }
 
+func TestSumTotalForResponse(t *testing.T) {
+	t.Run("Should sum all products and return by reference", func(t *testing.T) {
+		var totalAmount float64
+		var totalDiscount float64
+		var totalAmountWithDiscount float64
+
+		var expectedTotalAmount float64
+		var expectedTotalDiscount float64
+
+		for _, product := range mock.ProductsAppliedDiscountWithoutGift {
+			expectedTotalAmount += product.TotalAmount
+			expectedTotalDiscount += product.Discount
+		}
+
+		expectedTotalAmountWithDiscount := expectedTotalAmount - expectedTotalDiscount
+
+		SumTotalForResponse(mock.ProductsAppliedDiscountWithoutGift, &totalAmount, &totalDiscount, &totalAmountWithDiscount)
+
+		assert.Equal(t, expectedTotalAmount, totalAmount)
+		assert.Equal(t, expectedTotalDiscount, totalDiscount)
+		assert.Equal(t, expectedTotalAmountWithDiscount, totalAmountWithDiscount)
+	})
+}
+
 func TestExistsGiftAddedInProducts(t *testing.T) {
 	t.Run("Should return false if not exists product gift in list", func(t *testing.T) {
 		t.Parallel()
