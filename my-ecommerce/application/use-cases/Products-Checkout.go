@@ -4,6 +4,7 @@ import (
 	useCaseProtocol "github.com/elissonalvesilva/interview-hash/my-ecommerce/application/protocols"
 	"github.com/elissonalvesilva/interview-hash/my-ecommerce/domain/entity"
 	domainProtocol "github.com/elissonalvesilva/interview-hash/my-ecommerce/domain/protocols"
+	"github.com/elissonalvesilva/interview-hash/my-ecommerce/shared/currency"
 	"github.com/elissonalvesilva/interview-hash/my-ecommerce/shared/date"
 	"time"
 )
@@ -41,9 +42,9 @@ func (useCase *ProductCheckoutUseCase) CheckoutProducts(productList []domainProt
 	SumTotalForResponse(productsAppliedDiscount, &totalAmount, &totalDiscount, &totalAmountWithDiscount)
 
 	return domainProtocol.CheckoutResponse{
-		TotalAmount: totalAmount,
-		TotalAmountWithDiscount: totalAmountWithDiscount,
-		TotalDiscount: totalDiscount,
+		TotalAmount: currency.TruncateNaive(totalAmount),
+		TotalAmountWithDiscount: currency.TruncateNaive(totalAmountWithDiscount),
+		TotalDiscount: currency.TruncateNaive(totalDiscount),
 		Products: productsAppliedDiscount,
 	}
 }
