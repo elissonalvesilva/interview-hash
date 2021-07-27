@@ -39,6 +39,17 @@ func (ctrl *CheckoutController) CheckoutProductsController (w http.ResponseWrite
 	}
 
 	checkoutProduct := ctrl.useCase.CheckoutProducts(productCheckoutRequest.Products)
+	if len(checkoutProduct.Products) == 0 {
+		var ids []int
+
+		for _, product := range checkoutProduct.Products {
+			ids = append(ids, int(product.ID))
+		}
+
+		sendResponse.NotFound(w, errorToResponse.NotFoundProducts(ids))
+		return
+	}
+
 
 	sendResponse.Ok(w, checkoutProduct)
 	return
