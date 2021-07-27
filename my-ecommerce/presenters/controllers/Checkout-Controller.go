@@ -26,7 +26,7 @@ func (ctrl *CheckoutController) CheckoutProductsController (w http.ResponseWrite
 
 	if errDecode != nil {
 		w.WriteHeader(http.StatusBadRequest)
-		json.NewEncoder(w).Encode("Invalid request param")
+		json.NewEncoder(w).Encode("Invalid request param json")
 		return
 	}
 

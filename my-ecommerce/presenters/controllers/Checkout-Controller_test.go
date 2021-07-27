@@ -17,6 +17,28 @@ import (
 var blackFridayDate = time.Date(2021, 11, 29, 00, 00, 00, 00, time.UTC)
 
 func TestCheckoutController_CheckoutProductsController(t *testing.T) {
+	t.Run("Should return a error if body param is invalid json", func(t *testing.T) {
+		t.Parallel()
+
+		ctrl := gomock.NewController(t)
+
+		mockProductCheckoutRepository := mock.NewMockProductCheckoutRepository(ctrl)
+		mockDiscountServiceRepository := mock.NewMockDiscountServiceRepository(ctrl)
+
+		productCheckoutUseCase := useCases.NewProductsCheckout(mockProductCheckoutRepository, mockDiscountServiceRepository, blackFridayDate)
+
+		sut := NewCheckoutController(*productCheckoutUseCase)
+
+		productCheckoutRequest := []byte(`{"a1": 1`)
+
+		req, _ := http.NewRequest("POST", "/checkout", bytes.NewBuffer(productCheckoutRequest))
+		req.Header.Set("Content-Type", "application/json")
+		w := httptest.NewRecorder()
+
+		sut.CheckoutProductsController(w, req)
+		assert.Equal(t, http.StatusBadRequest, w.Code)
+	})
+
 	t.Run("Should return a error if pass incorrect params to body", func(t *testing.T) {
 		t.Parallel()
 
