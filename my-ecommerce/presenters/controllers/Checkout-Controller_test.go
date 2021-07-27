@@ -67,6 +67,37 @@ func TestCheckoutController_CheckoutProductsController(t *testing.T) {
 		assert.Equal(t, http.StatusBadRequest, w.Code)
 	})
 
+	t.Run("Should return a error if all ids is not in db", func(t *testing.T) {
+		t.Parallel()
+
+		ctrl := gomock.NewController(t)
+
+		mockProductCheckoutRepository := mock.NewMockProductCheckoutRepository(ctrl)
+		mockDiscountServiceRepository := mock.NewMockDiscountServiceRepository(ctrl)
+		mockValidator := mock.NewMockValidateParam(ctrl)
+
+		mockProductCheckoutRepository.EXPECT().GetProducts(gomock.Any()).Return([]protocols.ProductToApplyDiscount{})
+		mockValidator.EXPECT().ValidateRequestParams(gomock.Any()).Return(nil)
+
+		productCheckoutUseCase := useCases.NewProductsCheckout(mockProductCheckoutRepository, mockDiscountServiceRepository, blackFridayDate)
+
+		sut := NewCheckoutController(*productCheckoutUseCase, mockValidator)
+
+		productCheckoutRequest := []byte(`{"products": [{"id": 17, "quantity": 2}, {"id": 20, "quantity": 2}]}`)
+
+		req, _ := http.NewRequest("POST", "/checkout", bytes.NewBuffer(productCheckoutRequest))
+		req.Header.Set("Content-Type", "application/json")
+		w := httptest.NewRecorder()
+
+		sut.CheckoutProductsController(w, req)
+
+		var response protocols.CheckoutResponse
+
+		json.Unmarshal(w.Body.Bytes(), &response)
+
+		assert.Equal(t, http.StatusNotFound, w.Code)
+	})
+
 	t.Run("Should return products applied discount with total values", func(t *testing.T) {
 		t.Parallel()
 
