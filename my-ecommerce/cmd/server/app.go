@@ -1,6 +1,7 @@
 package server
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/elissonalvesilva/interview-hash/my-ecommerce/cmd/server/factories/controllers"
 	inMemoryDB "github.com/elissonalvesilva/interview-hash/my-ecommerce/infrastructure/db/in-memory"
@@ -39,6 +40,10 @@ func NewApp(port int) *App {
 	controller := controllers.MakeCheckoutController(database, blackFridayDate)
 
 	router.HandleFunc("/checkout", controller.CheckoutProductsController).Methods("POST")
+	router.HandleFunc("/health", func(writer http.ResponseWriter, request *http.Request) {
+		json.NewEncoder(writer).Encode("ok")
+		return
+	})
 
 	return &App{
 		httpServer: &http.Server{
