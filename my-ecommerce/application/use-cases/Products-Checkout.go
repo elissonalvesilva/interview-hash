@@ -35,12 +35,7 @@ func (useCase *ProductCheckoutUseCase) CheckoutProducts(productList []domainProt
 
 	productsAppliedDiscount := ApplyDiscountToProducts(useCase, &totalAmount, &totalDiscount, products)
 
-	if date.IsBlackFriday(time.Now(), useCase.blackFridayDate) {
-		if !ExistsGiftAddedInProducts(productsAppliedDiscount) {
-			productGift := useCase.repo.GetProductToGift()
-			productsAppliedDiscount = append(productsAppliedDiscount, productGift)
-		}
-	}
+	AddGiftToCheckout(useCase, &productsAppliedDiscount)
 
 	totalAmountWithDiscount := totalAmount - totalDiscount
 	return domainProtocol.CheckoutResponse{
@@ -67,6 +62,15 @@ func ApplyDiscountToProducts(useCase *ProductCheckoutUseCase, totalAmount *float
 	}
 
 	return productsAppliedDiscount
+}
+
+func AddGiftToCheckout(useCase *ProductCheckoutUseCase, productsAppliedDiscount *[]domainProtocol.ProductAppliedDiscount) {
+	if date.IsBlackFriday(time.Now(), useCase.blackFridayDate) {
+		if !ExistsGiftAddedInProducts(*productsAppliedDiscount) {
+			productGift := useCase.repo.GetProductToGift()
+			*productsAppliedDiscount = append(*productsAppliedDiscount, productGift)
+		}
+	}
 }
 
 func ExistsGiftAddedInProducts(products []domainProtocol.ProductAppliedDiscount) bool {
