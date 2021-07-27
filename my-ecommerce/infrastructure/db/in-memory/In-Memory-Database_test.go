@@ -2,8 +2,10 @@ package in_memory
 
 import (
 	"github.com/elissonalvesilva/interview-hash/my-ecommerce/domain/entity"
+	"github.com/elissonalvesilva/interview-hash/my-ecommerce/infrastructure/db/in-memory/protocols"
 	"github.com/elissonalvesilva/interview-hash/my-ecommerce/tests/mock"
 	"github.com/stretchr/testify/assert"
+	"reflect"
 	"testing"
 )
 
@@ -32,26 +34,62 @@ func TestInMemoryDatabase_GetByID(t *testing.T) {
 	})
 }
 
-func TestGetNameStruct(t *testing.T) {
-	t.Run("Should return a error if condition is not found in struct", func(t *testing.T) {
-		t.Parallel()
+func TestInMemoryDatabase_GetOne(t *testing.T) {
+	t.Run("Should return error if item not found in database using filter", func(t *testing.T) {
+		expectedResponse := ErrNotFoundItemInDBByCondition
+		database := mock.Products
 
-		expectedResponse := ErrNotFoundConditionInStruct
+		sut := NewInMemoryDatabase(database)
+		response, errorResponse := sut.GetOne(protocols.Filter{Condition: "ID", ValueToFilter: 5})
 
-		response, errorResponse := GetNameStruct("x")
-		assert.Equal(t, "", response)
+		assert.Equal(t, entity.Product{}, response)
 		assert.NotNil(t, errorResponse)
-		assert.Errorf(t, expectedResponse, response)
+		assert.Equal(t, expectedResponse, errorResponse)
 	})
 
-	t.Run("Should return a string with name of Struct key if condition exists", func(t *testing.T) {
-		t.Parallel()
+	t.Run("Should return product by filter", func(t *testing.T) {
+		database := mock.Products
 
-		expectedResponse := "ID"
+		sut := NewInMemoryDatabase(database)
+		response, errorResponse := sut.GetOne(protocols.Filter{Condition: "ID", ValueToFilter: 1})
 
-		response, errorResponse := GetNameStruct("ID")
+		assert.Equal(t, mock.Product1, response)
 		assert.Nil(t, errorResponse)
-		assert.Equal(t, expectedResponse, response)
+	})
 
+	t.Run("Should return product by filter equals to gift true", func(t *testing.T) {
+		database := mock.Products
+
+		sut := NewInMemoryDatabase(database)
+		response, errorResponse := sut.GetOne(protocols.Filter{Condition: "IsGift", ValueToFilter: true})
+
+		assert.Equal(t, mock.Product3, response)
+		assert.Nil(t, errorResponse)
+	})
+}
+
+func TestGetValueFromStruct(t *testing.T) {
+	t.Run("Should return element equals to int", func(t *testing.T) {
+		response := GetValueFromStruct(mock.Product1, "ID")
+		expectedInt64 := reflect.TypeOf(mock.Product1.ID).Kind()
+		assert.IsType(t, expectedInt64, reflect.TypeOf(response).Kind())
+	})
+
+	t.Run("Should return element equals to string", func(t *testing.T) {
+		response := GetValueFromStruct(mock.Product1, "Title")
+		expectedString := reflect.TypeOf(mock.Product1.Title).Kind()
+		assert.IsType(t, expectedString, reflect.TypeOf(response).Kind())
+	})
+
+	t.Run("Should return element equals to float", func(t *testing.T) {
+		response := GetValueFromStruct(mock.Product1, "Amount")
+		expectedFloat64 := reflect.TypeOf(mock.Product1.Amount).Kind()
+		assert.IsType(t, expectedFloat64, reflect.TypeOf(response).Kind())
+	})
+
+	t.Run("Should return element equals to bool", func(t *testing.T) {
+		response := GetValueFromStruct(mock.Product1, "IsGift")
+		expectedBool := reflect.TypeOf(mock.Product1.IsGift).Kind()
+		assert.IsType(t, expectedBool, reflect.TypeOf(response).Kind())
 	})
 }
