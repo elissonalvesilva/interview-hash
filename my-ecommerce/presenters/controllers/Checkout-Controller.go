@@ -2,21 +2,23 @@ package controllers
 
 import (
 	"encoding/json"
-	"github.com/asaskevich/govalidator"
 	useCases "github.com/elissonalvesilva/interview-hash/my-ecommerce/application/use-cases"
 	domainProtocol "github.com/elissonalvesilva/interview-hash/my-ecommerce/domain/protocols"
 	errorToResponse "github.com/elissonalvesilva/interview-hash/my-ecommerce/presenters/error"
 	sendResponse "github.com/elissonalvesilva/interview-hash/my-ecommerce/presenters/helpers"
+	presentersProtocol "github.com/elissonalvesilva/interview-hash/my-ecommerce/presenters/protocols"
 	"net/http"
 )
 
 type CheckoutController struct {
 	useCase useCases.ProductCheckoutUseCase
+	validator presentersProtocol.ValidateParam
 }
 
-func NewCheckoutController(useCase useCases.ProductCheckoutUseCase) *CheckoutController {
+func NewCheckoutController(useCase useCases.ProductCheckoutUseCase, validator presentersProtocol.ValidateParam) *CheckoutController {
 	return &CheckoutController{
 		useCase: useCase,
+		validator: validator,
 	}
 }
 
@@ -30,7 +32,7 @@ func (ctrl *CheckoutController) CheckoutProductsController (w http.ResponseWrite
 		return
 	}
 
-	_, errorValidationParam := govalidator.ValidateStruct(productCheckoutRequest)
+	errorValidationParam := ctrl.validator.ValidateRequestParams(productCheckoutRequest)
 	if errorValidationParam != nil {
 		sendResponse.BadRequest(w, errorToResponse.InvalidRequestParams(errorValidationParam))
 		return
