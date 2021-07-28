@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/elissonalvesilva/interview-hash/my-ecommerce/cmd/server/factories/controllers"
 	inMemoryDB "github.com/elissonalvesilva/interview-hash/my-ecommerce/infrastructure/db/in-memory"
+	"github.com/elissonalvesilva/interview-hash/my-ecommerce/infrastructure/logger/logrus"
 	"github.com/elissonalvesilva/interview-hash/my-ecommerce/shared/file"
 	"github.com/gorilla/mux"
 	"net/http"
@@ -37,6 +38,7 @@ func NewApp(port int) *App {
 
 	router := mux.NewRouter()
 
+	logger := logrus.NewLogger()
 	controller := controllers.MakeCheckoutController(database, blackFridayDate)
 
 	router.HandleFunc("/checkout", controller.CheckoutProductsController).Methods("POST")
@@ -48,7 +50,7 @@ func NewApp(port int) *App {
 	return &App{
 		httpServer: &http.Server{
 			Addr:    fmt.Sprintf(":%v", port),
-			Handler: router,
+			Handler: logger.WithLogging(router),
 		},
 	}
 }
