@@ -28,7 +28,7 @@ jobs:
           target: ".env"
 
       - name: Run Tests
-        run: go test ./...
+        run: make tests
 
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master
