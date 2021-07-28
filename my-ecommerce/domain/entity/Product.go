@@ -34,8 +34,8 @@ func ApplyDiscount(product protocols.ProductToApplyDiscount, quantity int, perce
 		return protocols.ProductAppliedDiscount{
 			ID: product.ID,
 			Quantity: quantity,
-			UnitAmount: currency.TruncateNaive(product.Amount),
-			TotalAmount: currency.TruncateNaive(totalAmount),
+			UnitAmount: currency.ParseToCents(currency.TruncateNaive(product.Amount)),
+			TotalAmount: currency.ParseToCents(currency.TruncateNaive(totalAmount)),
 			Discount: 0,
 			IsGift: product.IsGift,
 		}
@@ -46,9 +46,9 @@ func ApplyDiscount(product protocols.ProductToApplyDiscount, quantity int, perce
 	return protocols.ProductAppliedDiscount{
 		ID: product.ID,
 		Quantity: quantity,
-		UnitAmount: currency.TruncateNaive(product.Amount),
-		TotalAmount: currency.TruncateNaive(totalAmount),
-		Discount: currency.TruncateNaive(discount),
+		UnitAmount: currency.ParseToCents(currency.TruncateNaive(product.Amount)),
+		TotalAmount: currency.ParseToCents(currency.TruncateNaive(totalAmount)),
+		Discount: currency.ParseToCents(currency.TruncateNaive(discount)),
 		IsGift: product.IsGift,
 	}
 }
