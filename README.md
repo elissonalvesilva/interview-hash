@@ -47,7 +47,7 @@ $ make stop
 
 ### Routes
 > Host
-`http://localhost:4513/`
+`http://localhost:4000/`
 
 > Health Check
 - GET `/health`
