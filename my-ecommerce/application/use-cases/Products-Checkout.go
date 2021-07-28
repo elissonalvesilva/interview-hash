@@ -4,7 +4,6 @@ import (
 	useCaseProtocol "github.com/elissonalvesilva/interview-hash/my-ecommerce/application/protocols"
 	"github.com/elissonalvesilva/interview-hash/my-ecommerce/domain/entity"
 	domainProtocol "github.com/elissonalvesilva/interview-hash/my-ecommerce/domain/protocols"
-	"github.com/elissonalvesilva/interview-hash/my-ecommerce/shared/currency"
 	"github.com/elissonalvesilva/interview-hash/my-ecommerce/shared/date"
 	"time"
 )
@@ -31,9 +30,9 @@ func (useCase *ProductCheckoutUseCase) CheckoutProducts(productList []domainProt
 		return domainProtocol.CheckoutResponse{}
 	}
 
-	var totalAmount float64
-	var totalDiscount float64
-	var totalAmountWithDiscount float64
+	var totalAmount int64
+	var totalDiscount int64
+	var totalAmountWithDiscount int64
 
 	productsAppliedDiscount := ApplyDiscountToProducts(useCase, products)
 
@@ -42,9 +41,9 @@ func (useCase *ProductCheckoutUseCase) CheckoutProducts(productList []domainProt
 	SumTotalForResponse(productsAppliedDiscount, &totalAmount, &totalDiscount, &totalAmountWithDiscount)
 
 	return domainProtocol.CheckoutResponse{
-		TotalAmount: currency.TruncateNaive(totalAmount),
-		TotalAmountWithDiscount: currency.TruncateNaive(totalAmountWithDiscount),
-		TotalDiscount: currency.TruncateNaive(totalDiscount),
+		TotalAmount: totalAmount,
+		TotalAmountWithDiscount: totalAmountWithDiscount,
+		TotalDiscount: totalAmountWithDiscount,
 		Products: productsAppliedDiscount,
 	}
 }
@@ -65,7 +64,7 @@ func ApplyDiscountToProducts(useCase *ProductCheckoutUseCase, products []domainP
 	return productsAppliedDiscount
 }
 
-func SumTotalForResponse(productsAppliedDiscount []domainProtocol.ProductAppliedDiscount, totalAmount *float64, totalDiscount *float64, totalAmountWithDiscount *float64) {
+func SumTotalForResponse(productsAppliedDiscount []domainProtocol.ProductAppliedDiscount, totalAmount *int64, totalDiscount *int64, totalAmountWithDiscount *int64) {
 	for _, product := range productsAppliedDiscount {
 		*totalAmount += product.TotalAmount
 		*totalDiscount += product.Discount
