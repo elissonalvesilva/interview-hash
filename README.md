@@ -73,6 +73,7 @@ $ make start
 
 ## Run test
 - Local Test
+> Run all tests (unit, e2e)
 ```bash
 $ make tests
 ```
