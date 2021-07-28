@@ -48,16 +48,27 @@ func (lg *LoggerLogrus) WithLogging(h http.Handler) http.Handler {
 			responseData:   responseData,
 		}
 		h.ServeHTTP(&lrw, req)
+		status := lrw.responseData.status
+
+		if status == 0 {
+			status = 200
+		}
 
 		duration := time.Since(start)
 
-		logrus.WithFields(logrus.Fields{
+		logrudFields := logrus.Fields{
 			"uri":      req.RequestURI,
 			"method":   req.Method,
-			"status":   responseData.status,
+			"remote":   req.RemoteAddr,
+			"status":   status,
 			"duration": duration,
 			"size":     responseData.size,
-		}).Info("request completed")
+			"referer":  req.Referer(),
+			"user-agent": req.UserAgent(),
+			"body": req.Body,
+		}
+
+		logrus.WithFields(logrudFields).Info("request completed")
 	}
 	return http.HandlerFunc(loggingFn)
 }
