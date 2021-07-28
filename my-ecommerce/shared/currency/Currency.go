@@ -12,3 +12,12 @@ func TruncateNaive(value float64) float64 {
 
 	return value
 }
+
+func ParseToCents(value float64) int64 {
+	if value == 0.0 {
+		return int64(0)
+	}
+	cents := 100
+
+	return int64(value * float64(cents))
+}
