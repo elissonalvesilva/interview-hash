@@ -125,3 +125,11 @@ make logs-checkout-service
 ```bash
 make logs-tail
 ```
+
+## Diagrams
+
+### Design
+<img src="./diagram_design.png" alt="design diagram"/>
+
+### Architecture
+<img src="./architecture_diagram.png" alt="architecture diagram"/>
