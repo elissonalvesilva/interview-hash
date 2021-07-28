@@ -1,5 +1,5 @@
 
-.PHONY: build start stop logs-checkout-service logs-analyzer logs-tail tests-docker tests-local
+.PHONY: build start stop logs-checkout-service logs-analyzer logs-tail tests-docker tests
 
 CONTAINER_NAME_API := checkout-service
 
