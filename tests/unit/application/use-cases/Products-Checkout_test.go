@@ -153,12 +153,12 @@ func TestApplyDiscountToProducts(t *testing.T) {
 func TestSumTotalForResponse(t *testing.T) {
 	t.Run("Should sum all products and return by reference", func(t *testing.T) {
 		t.Parallel()
-		var totalAmount float64
-		var totalDiscount float64
-		var totalAmountWithDiscount float64
+		var totalAmount int64
+		var totalDiscount int64
+		var totalAmountWithDiscount int64
 
-		var expectedTotalAmount float64
-		var expectedTotalDiscount float64
+		var expectedTotalAmount int64
+		var expectedTotalDiscount int64
 
 		for _, product := range mock2.ProductsAppliedDiscountWithoutGift {
 			expectedTotalAmount += product.TotalAmount
