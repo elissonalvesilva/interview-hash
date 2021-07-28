@@ -153,7 +153,7 @@ var ProductsToApplyDiscountWithoutGift = []protocols.ProductToApplyDiscount {
 var CheckoutResponse = protocols.CheckoutResponse{
 	TotalAmount:             currency.ParseToCents(currency.TruncateNaive(Product1.Amount * float64(quantityProduct1))),
 	TotalAmountWithDiscount: currency.ParseToCents((Product1.Amount * float64(quantityProduct1)) - (Product1.Amount * float64(quantityProduct1)) *defaultDiscount),
-	TotalDiscount:           currency.ParseToCents(currency.TruncateNaive((Product1.Amount * float64(quantityProduct1)) * defaultDiscount)),
+	TotalDiscount:           currency.ParseToCents(currency.TruncateNaive(Product1.Amount * float64(quantityProduct1) * defaultDiscount)),
 	Products:                ProductsAppliedDiscount,
 }
 
