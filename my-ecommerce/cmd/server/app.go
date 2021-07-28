@@ -45,7 +45,7 @@ func NewApp(port int) *App {
 	router.HandleFunc("/health", func(writer http.ResponseWriter, request *http.Request) {
 		json.NewEncoder(writer).Encode("ok")
 		return
-	})
+	}).Methods("GET")
 
 	return &App{
 		httpServer: &http.Server{
