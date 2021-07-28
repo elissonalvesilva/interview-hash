@@ -7,6 +7,8 @@ import (
 	"google.golang.org/grpc"
 	"log"
 	"os"
+	"strconv"
+	"time"
 )
 
 type DiscountGRPCService struct {}
@@ -17,7 +19,16 @@ func NewDiscountGRPCService() *DiscountGRPCService {
 
 func (grpcClient *DiscountGRPCService) GetProductDiscount(productID int) (float64, error) {
 	address := fmt.Sprintf("%s:%s", os.Getenv("GRPC_DISCOUNT_HOST"), os.Getenv("GRPC_DISCOUNT_PORT"))
-	connection, err := grpc.Dial(address, grpc.WithInsecure())
+
+	timeoutEnv, errToParseTimeout := strconv.Atoi(os.Getenv("DISCOUNT_SERVICE_TIMEOUT"))
+	if errToParseTimeout != nil {
+		timeoutEnv = 2
+	}
+
+	timeout := time.Duration(timeoutEnv) * time.Second
+	ctx, _ := context.WithTimeout(context.Background(), timeout)
+
+	connection, err := grpc.DialContext(ctx, address ,grpc.WithInsecure())
 	if err != nil {
 		log.Fatalf("Could not connect to server: %v", err)
 	}
