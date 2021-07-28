@@ -70,6 +70,32 @@ $ make start
   ]
 }
 ```
+- Response
+```json
+{
+    "total_amount": 20000, 
+    "total_amount_with_discount": 19500,
+    "total_discount": 500,
+    "products": [
+        {
+            "id": 1,
+            "quantity": 2,
+            "unit_amount": 10000, 
+            "total_amount": 20000,
+            "discount": 500,
+            "is_gift": false
+        },
+        {
+            "id": 3,
+            "quantity": 1,
+            "unit_amount": 0,
+            "total_amount": 0, 
+            "discount": 0,
+            "is_gift": true
+        }
+    ]
+}
+```
 
 ## Run test
 - Local Test
