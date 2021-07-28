@@ -2,7 +2,6 @@ package logrus
 
 import (
 	"github.com/sirupsen/logrus"
-	"io/ioutil"
 	"net/http"
 	"time"
 )
@@ -56,7 +55,7 @@ func (lg *LoggerLogrus) WithLogging(h http.Handler) http.Handler {
 		}
 
 		duration := time.Since(start)
-		bodyBytes, _ := ioutil.ReadAll(req.Body)
+
 		logrudFields := logrus.Fields{
 			"uri":      req.RequestURI,
 			"method":   req.Method,
@@ -66,7 +65,6 @@ func (lg *LoggerLogrus) WithLogging(h http.Handler) http.Handler {
 			"size":     responseData.size,
 			"referer":  req.Referer(),
 			"user-agent": req.UserAgent(),
-			"body": string(bodyBytes),
 		}
 
 		logrus.WithFields(logrudFields).Info("request completed")
