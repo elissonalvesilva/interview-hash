@@ -5,8 +5,8 @@ import valueObjects "github.com/elissonalvesilva/interview-hash/my-ecommerce/dom
 type ProductAppliedDiscount struct {
 	ID valueObjects.ID `json:"id"`
 	Quantity int `json:"quantity"`
-	UnitAmount float64 `json:"unit_amount"`
-	TotalAmount float64 `json:"total_amount"`
-	Discount float64 `json:"discount"`
+	UnitAmount int64 `json:"unit_amount"`
+	TotalAmount int64 `json:"total_amount"`
+	Discount int64 `json:"discount"`
 	IsGift bool `json:"is_gift"`
 }
