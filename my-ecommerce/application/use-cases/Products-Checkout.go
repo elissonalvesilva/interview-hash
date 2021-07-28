@@ -43,7 +43,7 @@ func (useCase *ProductCheckoutUseCase) CheckoutProducts(productList []domainProt
 	return domainProtocol.CheckoutResponse{
 		TotalAmount: totalAmount,
 		TotalAmountWithDiscount: totalAmountWithDiscount,
-		TotalDiscount: totalAmountWithDiscount,
+		TotalDiscount: totalDiscount,
 		Products: productsAppliedDiscount,
 	}
 }
