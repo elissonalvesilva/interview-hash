@@ -8,6 +8,19 @@ services:
     - 50051:50051
     networks:
       - app-network
+  checkout-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: checkout-service
+    ports:
+    - 4513:4513
+    networks:
+      - app-network
+    links:
+      - discount-service
+    depends_on:
+      - discount-service
 
 networks:
   app-network:
