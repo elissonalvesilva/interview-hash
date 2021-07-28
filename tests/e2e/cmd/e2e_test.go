@@ -1,4 +1,4 @@
-package main
+package cmd
 
 import (
 	"bytes"
@@ -7,7 +7,7 @@ import (
 	inMemoryDB "github.com/elissonalvesilva/interview-hash/my-ecommerce/infrastructure/db/in-memory"
 	errorToResponse "github.com/elissonalvesilva/interview-hash/my-ecommerce/presenters/error"
 	presentersProtocol "github.com/elissonalvesilva/interview-hash/my-ecommerce/presenters/protocols"
-	"github.com/elissonalvesilva/interview-hash/my-ecommerce/tests/mock"
+	mock2 "github.com/elissonalvesilva/interview-hash/tests/mock"
 	"github.com/gorilla/mux"
 	"github.com/stretchr/testify/assert"
 	"net/http"
@@ -17,7 +17,7 @@ import (
 )
 
 func setup(t *testing.T, needsDiscountService bool) (*httptest.ResponseRecorder, *mux.Router) {
-	db := mock.Products
+	db := mock2.Products
 	var blackFridayDate time.Time
 
 	database := inMemoryDB.NewInMemoryDatabase(db)
@@ -26,7 +26,7 @@ func setup(t *testing.T, needsDiscountService bool) (*httptest.ResponseRecorder,
 
 	router := mux.NewRouter()
 
-	controller := mock.SetupController(t, database, blackFridayDate, needsDiscountService)
+	controller := mock2.SetupController(t, database, blackFridayDate, needsDiscountService)
 
 	router.HandleFunc("/checkout", controller.CheckoutProductsController).Methods("POST")
 	router.HandleFunc("/health", func(writer http.ResponseWriter, request *http.Request) {
@@ -72,7 +72,7 @@ func TestE2ECheckoutProduct(t *testing.T) {
 		json.Unmarshal(writer.Body.Bytes(), &response)
 
 		assert.Equal(t, http.StatusOK, writer.Code)
-		assert.Equal(t, mock.CheckoutResponse, response)
+		assert.Equal(t, mock2.CheckoutResponse, response)
 	})
 
 	t.Run("Should return error if json is invalid", func(t *testing.T) {

@@ -2,8 +2,9 @@ package use_cases
 
 import (
 	"errors"
+	"github.com/elissonalvesilva/interview-hash/my-ecommerce/application/use-cases"
 	"github.com/elissonalvesilva/interview-hash/my-ecommerce/domain/protocols"
-	"github.com/elissonalvesilva/interview-hash/my-ecommerce/tests/mock"
+	mock2 "github.com/elissonalvesilva/interview-hash/tests/mock"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 	"testing"
@@ -28,12 +29,12 @@ func TestProductCheckoutUseCase_CheckoutProducts(t *testing.T) {
 		t.Parallel()
 		ctrl := gomock.NewController(t)
 
-		mockProductCheckoutRepository := mock.NewMockProductCheckoutRepository(ctrl)
-		mockDiscountServiceRepository := mock.NewMockDiscountServiceRepository(ctrl)
+		mockProductCheckoutRepository := mock2.NewMockProductCheckoutRepository(ctrl)
+		mockDiscountServiceRepository := mock2.NewMockDiscountServiceRepository(ctrl)
 
 		mockProductCheckoutRepository.EXPECT().GetProducts(gomock.Any()).Return([]protocols.ProductToApplyDiscount{})
 
-		sut := NewProductsCheckout(mockProductCheckoutRepository, mockDiscountServiceRepository, blackFridayDate)
+		sut := use_cases.NewProductsCheckout(mockProductCheckoutRepository, mockDiscountServiceRepository, blackFridayDate)
 
 		response := sut.CheckoutProducts(productsCheckout)
 		assert.Equal(t, protocols.CheckoutResponse{}, response)
@@ -43,35 +44,35 @@ func TestProductCheckoutUseCase_CheckoutProducts(t *testing.T) {
 		t.Parallel()
 		ctrl := gomock.NewController(t)
 
-		mockProductCheckoutRepository := mock.NewMockProductCheckoutRepository(ctrl)
-		mockDiscountServiceRepository := mock.NewMockDiscountServiceRepository(ctrl)
+		mockProductCheckoutRepository := mock2.NewMockProductCheckoutRepository(ctrl)
+		mockDiscountServiceRepository := mock2.NewMockDiscountServiceRepository(ctrl)
 
 		gomock.InOrder(
 			mockDiscountServiceRepository.EXPECT().GetProductDiscount(gomock.Any()).Return(0.0, errors.New("service unavailable")),
 			mockDiscountServiceRepository.EXPECT().GetProductDiscount(gomock.Any()).Return(0.25, nil),
 		)
-		mockProductCheckoutRepository.EXPECT().GetProducts(gomock.Any()).Return(mock.ProductsToApplyDiscountResponse)
+		mockProductCheckoutRepository.EXPECT().GetProducts(gomock.Any()).Return(mock2.ProductsToApplyDiscountResponse)
 
-		sut := NewProductsCheckout(mockProductCheckoutRepository, mockDiscountServiceRepository, blackFridayDate)
+		sut := use_cases.NewProductsCheckout(mockProductCheckoutRepository, mockDiscountServiceRepository, blackFridayDate)
 
 		response := sut.CheckoutProducts(productsCheckout)
-		assert.Equal(t, mock.CheckoutResponseWithoutDiscount, response)
+		assert.Equal(t, mock2.CheckoutResponseWithoutDiscount, response)
 	})
 
 	t.Run("Should return a response with products applied discount and with a gift 'cause the date is equals to black friday", func(t *testing.T) {
 		t.Parallel()
 		ctrl := gomock.NewController(t)
 
-		mockProductCheckoutRepository := mock.NewMockProductCheckoutRepository(ctrl)
-		mockDiscountServiceRepository := mock.NewMockDiscountServiceRepository(ctrl)
+		mockProductCheckoutRepository := mock2.NewMockProductCheckoutRepository(ctrl)
+		mockDiscountServiceRepository := mock2.NewMockDiscountServiceRepository(ctrl)
 
 		giftProduct := protocols.ProductAppliedDiscount{
-			ID: mock.Product3.ID,
-			Quantity: 2,
-			UnitAmount: 0,
+			ID:          mock2.Product3.ID,
+			Quantity:    2,
+			UnitAmount:  0,
 			TotalAmount: 0,
-			Discount: 0,
-			IsGift: mock.Product3.IsGift,
+			Discount:    0,
+			IsGift:      mock2.Product3.IsGift,
 		}
 
 		gomock.InOrder(
@@ -79,12 +80,12 @@ func TestProductCheckoutUseCase_CheckoutProducts(t *testing.T) {
 			mockDiscountServiceRepository.EXPECT().GetProductDiscount(gomock.Any()).Return(0.15, nil),
 		)
 
-		mockProductCheckoutRepository.EXPECT().GetProducts(gomock.Any()).Return(mock.ProductsToApplyDiscountWithoutGift)
+		mockProductCheckoutRepository.EXPECT().GetProducts(gomock.Any()).Return(mock2.ProductsToApplyDiscountWithoutGift)
 		mockProductCheckoutRepository.EXPECT().GetProductToGift().Return(giftProduct)
 
-		sut := NewProductsCheckout(mockProductCheckoutRepository, mockDiscountServiceRepository, time.Now())
+		sut := use_cases.NewProductsCheckout(mockProductCheckoutRepository, mockDiscountServiceRepository, time.Now())
 
-		expectedResponse := mock.CheckoutResponseWithGift
+		expectedResponse := mock2.CheckoutResponseWithGift
 		expectedResponse.Products = append(expectedResponse.Products, giftProduct)
 
 		response := sut.CheckoutProducts(productsCheckout)
@@ -95,19 +96,19 @@ func TestProductCheckoutUseCase_CheckoutProducts(t *testing.T) {
 		t.Parallel()
 		ctrl := gomock.NewController(t)
 
-		mockProductCheckoutRepository := mock.NewMockProductCheckoutRepository(ctrl)
-		mockDiscountServiceRepository := mock.NewMockDiscountServiceRepository(ctrl)
+		mockProductCheckoutRepository := mock2.NewMockProductCheckoutRepository(ctrl)
+		mockDiscountServiceRepository := mock2.NewMockDiscountServiceRepository(ctrl)
 
 		gomock.InOrder(
 			mockDiscountServiceRepository.EXPECT().GetProductDiscount(gomock.Any()).Return(0.15, nil),
 			mockDiscountServiceRepository.EXPECT().GetProductDiscount(gomock.Any()).Return(0.25, nil),
 		)
-		mockProductCheckoutRepository.EXPECT().GetProducts(gomock.Any()).Return(mock.ProductsToApplyDiscountResponse)
+		mockProductCheckoutRepository.EXPECT().GetProducts(gomock.Any()).Return(mock2.ProductsToApplyDiscountResponse)
 
-		sut := NewProductsCheckout(mockProductCheckoutRepository, mockDiscountServiceRepository, blackFridayDate)
+		sut := use_cases.NewProductsCheckout(mockProductCheckoutRepository, mockDiscountServiceRepository, blackFridayDate)
 
 		response := sut.CheckoutProducts(productsCheckout)
-		assert.Equal(t, mock.CheckoutResponse, response)
+		assert.Equal(t, mock2.CheckoutResponse, response)
 	})
 }
 
@@ -116,36 +117,36 @@ func TestApplyDiscountToProducts(t *testing.T) {
 		t.Parallel()
 		ctrl := gomock.NewController(t)
 
-		mockProductCheckoutRepository := mock.NewMockProductCheckoutRepository(ctrl)
-		mockDiscountServiceRepository := mock.NewMockDiscountServiceRepository(ctrl)
+		mockProductCheckoutRepository := mock2.NewMockProductCheckoutRepository(ctrl)
+		mockDiscountServiceRepository := mock2.NewMockDiscountServiceRepository(ctrl)
 
 		gomock.InOrder(
 			mockDiscountServiceRepository.EXPECT().GetProductDiscount(gomock.Any()).Return(0.0, errors.New("service unavailable")),
 			mockDiscountServiceRepository.EXPECT().GetProductDiscount(gomock.Any()).Return(0.25, nil),
 		)
 
-		sut := NewProductsCheckout(mockProductCheckoutRepository, mockDiscountServiceRepository, blackFridayDate)
-		productsAppliedDiscount := ApplyDiscountToProducts(sut, mock.ProductsToApplyDiscountResponse)
+		sut := use_cases.NewProductsCheckout(mockProductCheckoutRepository, mockDiscountServiceRepository, blackFridayDate)
+		productsAppliedDiscount := use_cases.ApplyDiscountToProducts(sut, mock2.ProductsToApplyDiscountResponse)
 
-		assert.Equal(t, mock.ProductsNotAppliedDiscount, productsAppliedDiscount)
+		assert.Equal(t, mock2.ProductsNotAppliedDiscount, productsAppliedDiscount)
 	})
 
 	t.Run("Should apply discount equals all products if service return success", func(t *testing.T) {
 		t.Parallel()
 		ctrl := gomock.NewController(t)
 
-		mockProductCheckoutRepository := mock.NewMockProductCheckoutRepository(ctrl)
-		mockDiscountServiceRepository := mock.NewMockDiscountServiceRepository(ctrl)
+		mockProductCheckoutRepository := mock2.NewMockProductCheckoutRepository(ctrl)
+		mockDiscountServiceRepository := mock2.NewMockDiscountServiceRepository(ctrl)
 
 		gomock.InOrder(
 			mockDiscountServiceRepository.EXPECT().GetProductDiscount(gomock.Any()).Return(0.15, nil),
 			mockDiscountServiceRepository.EXPECT().GetProductDiscount(gomock.Any()).Return(0.15, nil),
 		)
 
-		sut := NewProductsCheckout(mockProductCheckoutRepository, mockDiscountServiceRepository, blackFridayDate)
-		productsAppliedDiscount := ApplyDiscountToProducts(sut, mock.ProductsToApplyDiscountWithoutGift)
+		sut := use_cases.NewProductsCheckout(mockProductCheckoutRepository, mockDiscountServiceRepository, blackFridayDate)
+		productsAppliedDiscount := use_cases.ApplyDiscountToProducts(sut, mock2.ProductsToApplyDiscountWithoutGift)
 
-		assert.Equal(t, mock.ProductsAppliedDiscountWithoutGift, productsAppliedDiscount)
+		assert.Equal(t, mock2.ProductsAppliedDiscountWithoutGift, productsAppliedDiscount)
 	})
 }
 
@@ -159,14 +160,14 @@ func TestSumTotalForResponse(t *testing.T) {
 		var expectedTotalAmount float64
 		var expectedTotalDiscount float64
 
-		for _, product := range mock.ProductsAppliedDiscountWithoutGift {
+		for _, product := range mock2.ProductsAppliedDiscountWithoutGift {
 			expectedTotalAmount += product.TotalAmount
 			expectedTotalDiscount += product.Discount
 		}
 
 		expectedTotalAmountWithDiscount := expectedTotalAmount - expectedTotalDiscount
 
-		SumTotalForResponse(mock.ProductsAppliedDiscountWithoutGift, &totalAmount, &totalDiscount, &totalAmountWithDiscount)
+		use_cases.SumTotalForResponse(mock2.ProductsAppliedDiscountWithoutGift, &totalAmount, &totalDiscount, &totalAmountWithDiscount)
 
 		assert.Equal(t, expectedTotalAmount, totalAmount)
 		assert.Equal(t, expectedTotalDiscount, totalDiscount)
@@ -179,27 +180,27 @@ func TestAddGiftToCheckout(t *testing.T) {
 		t.Parallel()
 		ctrl := gomock.NewController(t)
 
-		mockProductCheckoutRepository := mock.NewMockProductCheckoutRepository(ctrl)
-		mockDiscountServiceRepository := mock.NewMockDiscountServiceRepository(ctrl)
+		mockProductCheckoutRepository := mock2.NewMockProductCheckoutRepository(ctrl)
+		mockDiscountServiceRepository := mock2.NewMockDiscountServiceRepository(ctrl)
 
 		giftProduct := protocols.ProductAppliedDiscount{
-			ID: mock.Product3.ID,
-			Quantity: 2,
-			UnitAmount: 0,
+			ID:          mock2.Product3.ID,
+			Quantity:    2,
+			UnitAmount:  0,
 			TotalAmount: 0,
-			Discount: 0,
-			IsGift: mock.Product3.IsGift,
+			Discount:    0,
+			IsGift:      mock2.Product3.IsGift,
 		}
-		productsAppliedDiscountWithoutGift := mock.ProductsAppliedDiscountWithoutGift
+		productsAppliedDiscountWithoutGift := mock2.ProductsAppliedDiscountWithoutGift
 
 		mockProductCheckoutRepository.EXPECT().GetProductToGift().Return(giftProduct)
 
-		sut := NewProductsCheckout(mockProductCheckoutRepository, mockDiscountServiceRepository, time.Now())
+		sut := use_cases.NewProductsCheckout(mockProductCheckoutRepository, mockDiscountServiceRepository, time.Now())
 
-		AddGiftToCheckout(sut, &productsAppliedDiscountWithoutGift)
+		use_cases.AddGiftToCheckout(sut, &productsAppliedDiscountWithoutGift)
 
 
-		assert.Equal(t, mock.AllProductsAppliedDiscountWithGift, productsAppliedDiscountWithoutGift)
+		assert.Equal(t, mock2.AllProductsAppliedDiscountWithGift, productsAppliedDiscountWithoutGift)
 
 	})
 }
@@ -209,7 +210,7 @@ func TestExistsGiftAddedInProducts(t *testing.T) {
 		t.Parallel()
 		expectedResponse := false
 
-		existsGiftInList := ExistsGiftAddedInProducts(mock.ProductsAppliedDiscountWithoutGift)
+		existsGiftInList := use_cases.ExistsGiftAddedInProducts(mock2.ProductsAppliedDiscountWithoutGift)
 		assert.Equal(t, expectedResponse, existsGiftInList)
 	})
 
@@ -217,7 +218,7 @@ func TestExistsGiftAddedInProducts(t *testing.T) {
 		t.Parallel()
 		expectedResponse := true
 
-		existsGiftInList := ExistsGiftAddedInProducts(mock.ProductsAppliedDiscount)
+		existsGiftInList := use_cases.ExistsGiftAddedInProducts(mock2.ProductsAppliedDiscount)
 		assert.Equal(t, expectedResponse, existsGiftInList)
 	})
 }

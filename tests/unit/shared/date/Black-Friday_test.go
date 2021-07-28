@@ -1,6 +1,7 @@
 package date
 
 import (
+	"github.com/elissonalvesilva/interview-hash/my-ecommerce/shared/date"
 	"github.com/stretchr/testify/assert"
 	"testing"
 	"time"
@@ -13,7 +14,7 @@ func TestIsBlackFriday(t *testing.T) {
 		t.Parallel()
 		expectedResponse := false
 		fakeDate := time.Date(2021, 10, 29, 00, 00, 00, 00, time.UTC)
-		isBlackFridayDate := IsBlackFriday(fakeDate, blackFridayDate)
+		isBlackFridayDate := date.IsBlackFriday(fakeDate, blackFridayDate)
 		assert.Equal(t, expectedResponse, isBlackFridayDate)
 	})
 
@@ -22,7 +23,7 @@ func TestIsBlackFriday(t *testing.T) {
 		expectedResponse := true
 		fakeDate := time.Date(2021, 11, 29, 00, 00, 00, 00, time.UTC)
 
-		isBlackFridayDate := IsBlackFriday(fakeDate, blackFridayDate)
+		isBlackFridayDate := date.IsBlackFriday(fakeDate, blackFridayDate)
 		assert.Equal(t, expectedResponse, isBlackFridayDate)
 	})
 }

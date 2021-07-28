@@ -1,6 +1,7 @@
 package entity
 
 import (
+	"github.com/elissonalvesilva/interview-hash/my-ecommerce/domain/entity"
 	"github.com/elissonalvesilva/interview-hash/my-ecommerce/domain/protocols"
 	"github.com/elissonalvesilva/interview-hash/my-ecommerce/shared/currency"
 	"github.com/stretchr/testify/assert"
@@ -34,7 +35,7 @@ func TestApplyDiscount(t *testing.T) {
 			IsGift: product.IsGift,
 		}
 
-		appliedDiscount := ApplyDiscount(product, quantity, discountPercentage)
+		appliedDiscount := entity.ApplyDiscount(product, quantity, discountPercentage)
 		assert.Equal(t, expectedProductAppliedDiscount, appliedDiscount)
 	})
 
@@ -54,7 +55,7 @@ func TestApplyDiscount(t *testing.T) {
 			IsGift: product.IsGift,
 		}
 
-		appliedDiscount := ApplyDiscount(product, quantity, discountPercentage)
+		appliedDiscount := entity.ApplyDiscount(product, quantity, discountPercentage)
 		assert.Equal(t, expectedProductNotAppliedDiscount, appliedDiscount)
 	})
 
@@ -74,7 +75,7 @@ func TestApplyDiscount(t *testing.T) {
 			IsGift: product.IsGift,
 		}
 
-		appliedDiscount := ApplyDiscount(product, quantity, discountPercentage)
+		appliedDiscount := entity.ApplyDiscount(product, quantity, discountPercentage)
 		assert.Equal(t, expectedProductAppliedDiscount, appliedDiscount)
 	})
 }

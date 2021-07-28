@@ -3,8 +3,9 @@ package db
 import (
 	"github.com/elissonalvesilva/interview-hash/my-ecommerce/domain/entity"
 	"github.com/elissonalvesilva/interview-hash/my-ecommerce/domain/protocols"
+	"github.com/elissonalvesilva/interview-hash/my-ecommerce/infrastructure/db"
 	inMemoryDB "github.com/elissonalvesilva/interview-hash/my-ecommerce/infrastructure/db/in-memory"
-	"github.com/elissonalvesilva/interview-hash/my-ecommerce/tests/mock"
+	mock2 "github.com/elissonalvesilva/interview-hash/tests/mock"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 	"testing"
@@ -15,8 +16,8 @@ func TestProductCheckoutRepositoryImplementation_GetProducts(t *testing.T) {
 		t.Parallel()
 
 		ctrl := gomock.NewController(t)
-		mockInMemoryDatabase := mock.NewMockInMemory(ctrl)
-		productListToApplyDiscount := mock.ProductsToCheckout
+		mockInMemoryDatabase := mock2.NewMockInMemory(ctrl)
+		productListToApplyDiscount := mock2.ProductsToCheckout
 
 		gomock.InOrder(
 			mockInMemoryDatabase.EXPECT().GetByID(1).Return(entity.Product{}, inMemoryDB.ErrNotFoundItemInDB),
@@ -24,7 +25,7 @@ func TestProductCheckoutRepositoryImplementation_GetProducts(t *testing.T) {
 			mockInMemoryDatabase.EXPECT().GetByID(3).Return(entity.Product{}, inMemoryDB.ErrNotFoundItemInDB),
 		)
 
-		sut := NewProductCheckoutRepositoryImplementation(mockInMemoryDatabase)
+		sut := db.NewProductCheckoutRepositoryImplementation(mockInMemoryDatabase)
 
 		response := sut.GetProducts(productListToApplyDiscount)
 		assert.Equal(t, []protocols.ProductToApplyDiscount(nil), response)
@@ -34,19 +35,19 @@ func TestProductCheckoutRepositoryImplementation_GetProducts(t *testing.T) {
 		t.Parallel()
 
 		ctrl := gomock.NewController(t)
-		mockInMemoryDatabase := mock.NewMockInMemory(ctrl)
-		productListToApplyDiscount := mock.ProductsToCheckout
+		mockInMemoryDatabase := mock2.NewMockInMemory(ctrl)
+		productListToApplyDiscount := mock2.ProductsToCheckout
 
 		gomock.InOrder(
-			mockInMemoryDatabase.EXPECT().GetByID(1).Return(mock.Product1, nil),
-			mockInMemoryDatabase.EXPECT().GetByID(2).Return(mock.Product2, nil),
-			mockInMemoryDatabase.EXPECT().GetByID(3).Return(mock.Product3, nil),
+			mockInMemoryDatabase.EXPECT().GetByID(1).Return(mock2.Product1, nil),
+			mockInMemoryDatabase.EXPECT().GetByID(2).Return(mock2.Product2, nil),
+			mockInMemoryDatabase.EXPECT().GetByID(3).Return(mock2.Product3, nil),
 		)
 
-		sut := NewProductCheckoutRepositoryImplementation(mockInMemoryDatabase)
+		sut := db.NewProductCheckoutRepositoryImplementation(mockInMemoryDatabase)
 
 		response := sut.GetProducts(productListToApplyDiscount)
-		assert.Equal(t, mock.AllProductsToApplyDiscount, response)
+		assert.Equal(t, mock2.AllProductsToApplyDiscount, response)
 	})
 }
 
@@ -55,11 +56,11 @@ func TestProductCheckoutRepositoryImplementation_GetProductToGift(t *testing.T) 
 		t.Parallel()
 
 		ctrl := gomock.NewController(t)
-		mockInMemoryDatabase := mock.NewMockInMemory(ctrl)
+		mockInMemoryDatabase := mock2.NewMockInMemory(ctrl)
 
 		mockInMemoryDatabase.EXPECT().GetOne(gomock.Any()).Return(entity.Product{}, inMemoryDB.ErrNotFoundItemInDBByCondition)
 
-		sut := NewProductCheckoutRepositoryImplementation(mockInMemoryDatabase)
+		sut := db.NewProductCheckoutRepositoryImplementation(mockInMemoryDatabase)
 
 		response := sut.GetProductToGift()
 		assert.Equal(t, protocols.ProductAppliedDiscount{}, response)
@@ -69,20 +70,20 @@ func TestProductCheckoutRepositoryImplementation_GetProductToGift(t *testing.T) 
 		t.Parallel()
 
 		ctrl := gomock.NewController(t)
-		mockInMemoryDatabase := mock.NewMockInMemory(ctrl)
+		mockInMemoryDatabase := mock2.NewMockInMemory(ctrl)
 
-		mockInMemoryDatabase.EXPECT().GetOne(gomock.Any()).Return(mock.Product3, nil)
+		mockInMemoryDatabase.EXPECT().GetOne(gomock.Any()).Return(mock2.Product3, nil)
 
-		sut := NewProductCheckoutRepositoryImplementation(mockInMemoryDatabase)
+		sut := db.NewProductCheckoutRepositoryImplementation(mockInMemoryDatabase)
 
 		response := sut.GetProductToGift()
 		assert.Equal(t, protocols.ProductAppliedDiscount{
-			ID: mock.Product3.ID,
-			Quantity: 1,
+			ID:          mock2.Product3.ID,
+			Quantity:    1,
 			TotalAmount: 0,
-			UnitAmount: 0,
-			Discount: 0,
-			IsGift: mock.Product3.IsGift,
+			UnitAmount:  0,
+			Discount:    0,
+			IsGift:      mock2.Product3.IsGift,
 		}, response)
 	})
 }
