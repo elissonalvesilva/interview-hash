@@ -41,8 +41,6 @@ $ make start
 
 ### Routes
 > Host
-- in local:
-
 `http://localhost:4513/`
 
 > Health Check
@@ -59,7 +57,7 @@ $ make start
     - products: array json
         - id : int
         - quantity: int
-- Example
+- Example Request
 ```json
 {
   "products": [
@@ -102,6 +100,12 @@ $ make start
 > Run all tests (unit, e2e)
 ```bash
 $ make tests
+```
+
+- Local Test in Docker
+> Run all tests (unit, e2e)
+```bash
+$ make tests-docker
 ```
 
 ## Logs
