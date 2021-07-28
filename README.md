@@ -32,11 +32,17 @@
 ```bash
 $ go run ./my-ecommerce/cmd/main.go
 ```
+> Remember, if you want to validate if discount service is running you must start the service run `docker-compose up -d discount-service`
 
 **If want to run in docker**
 ```bash
 $ make build
 $ make start
+```
+
+**If you want to stop the application in docker**
+```bash
+$ make stop
 ```
 
 ### Routes
